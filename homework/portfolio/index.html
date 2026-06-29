@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>홍희표 | Android Application Developer Portfolio</title>
+    <meta
+      name="description"
+      content="Android, Kotlin, Java 기반 앱 개발자 홍희표의 경력, 프로젝트, 핵심 역량, 연락처를 정리한 채용 검토용 포트폴리오입니다."
+    />
+    <meta property="og:title" content="홍희표 | Android Application Developer Portfolio" />
+    <meta
+      property="og:description"
+      content="무전 서비스, 전자칠판, GIS 시스템, QA 자동화 경험을 기반으로 한 Android 앱 개발자 포트폴리오입니다."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#f5f7f8" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+    <header class="site-header">
+      <a class="brand" href="#home" aria-label="홈으로 이동">HHP</a>
+      <nav class="nav" aria-label="주요 메뉴">
+        <a class="nav-link active" href="#home">홈</a>
+        <a class="nav-link" href="#portfolio">포트폴리오</a>
+        <a class="nav-link" href="#about">자기소개</a>
+        <a class="nav-link" href="#contact">연락처</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="home" class="section hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Android Application Developer</p>
+          <h1>홍희표</h1>
+          <p class="role">Kotlin, Java 기반으로 실제 디바이스와 사용 흐름을 끝까지 구현하는 개발자</p>
+          <p class="intro">
+            무전 서비스, 전자칠판, GIS 공공 시스템, QA 자동화까지 제품의 화면과 기능이 사용자에게
+            안정적으로 전달되는 과정을 경험했습니다.
+          </p>
+          <div class="hero-actions" aria-label="주요 이동 버튼">
+            <a class="button primary" href="#portfolio">프로젝트 보기</a>
+            <a class="button secondary" href="#contact">연락처 확인</a>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-label="지원자 경력 요약">
+          <div class="device-preview">
+            <div class="phone-frame">
+              <div class="phone-status"></div>
+              <div class="android-symbol" aria-label="Android 개발 역량을 상징하는 심볼">
+                <span class="android-antenna left"></span>
+                <span class="android-antenna right"></span>
+                <span class="android-head">
+                  <i></i>
+                  <i></i>
+                </span>
+                <span class="android-body">
+                  <b class="arm left"></b>
+                  <b class="arm right"></b>
+                  <b class="leg left"></b>
+                  <b class="leg right"></b>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="metric-grid">
+            <div>
+              <span>6+</span>
+              <p>개발 경력</p>
+            </div>
+            <div>
+              <span>4</span>
+              <p>주요 도메인</p>
+            </div>
+            <div>
+              <span>Android</span>
+              <p>핵심 전문성</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="portfolio" class="section portfolio">
+        <div class="section-heading">
+          <p class="eyebrow">Portfolio</p>
+          <h2>실무 흐름이 드러나는 프로젝트</h2>
+          <p>
+            경력기술서에 기재된 업무를 채용담당자가 빠르게 검토할 수 있도록 역할, 기술, 성과 중심으로
+            정리했습니다.
+          </p>
+        </div>
+
+        <div class="project-grid">
+          <article class="project-card">
+            <div class="project-media">
+              <img src="assets/ptalk-jmobile.jpg" alt="PTalk JMobile 무전 애플리케이션 화면" />
+            </div>
+            <div class="project-body">
+              <p class="project-type">Mobile Communication</p>
+              <h3>PTalk JMobile Android 앱</h3>
+              <p>
+                무전 디바이스 기반 무전 앱에서 사운드 향상, 잡음 제거, 영상 공유 기능을 추가했습니다.
+              </p>
+              <dl>
+                <div>
+                  <dt>담당 역할</dt>
+                  <dd>Android 앱 개발, 기능 개선, 미디어 공유 기능 구현</dd>
+                </div>
+                <div>
+                  <dt>주요 성과</dt>
+                  <dd>2023.01 ~ 2025.03 아이디스 재직 중 제품 기능 개선과 유지보수 수행</dd>
+                </div>
+              </dl>
+              <ul class="tags" aria-label="사용 기술">
+                <li>Android</li>
+                <li>Kotlin</li>
+                <li>Android Studio</li>
+                <li>Media</li>
+              </ul>
+              <div class="project-links">
+                <a href="https://www.github.com/hhp227" target="_blank" rel="noreferrer">GitHub</a>
+                <a href="./홍희표_경력기술서.docx" target="_blank" rel="noreferrer">경력기술서</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-media">
+              <img src="assets/datemate.jpg" alt="DateMate 데이팅 애플리케이션 화면" />
+            </div>
+            <div class="project-body">
+              <p class="project-type">Personal Project</p>
+              <h3>데이트메이트 DateMate 앱</h3>
+              <p>
+                위치 기반 데이팅 앱으로 사용자 취향 기반 매칭과 데이트 정보 제공 기능을 구현했습니다.
+              </p>
+              <dl>
+                <div>
+                  <dt>담당 역할</dt>
+                  <dd>Android/iOS 앱 기획 및 클라이언트 개발, 반응형 UI/UX 개선</dd>
+                </div>
+                <div>
+                  <dt>주요 성과</dt>
+                  <dd>2025.12 ~ 2026.02 개인 프로젝트로 매칭, 게시글, 위치 기반 기능 구현</dd>
+                </div>
+              </dl>
+              <ul class="tags" aria-label="사용 기술">
+                <li>Android</li>
+                <li>Kotlin</li>
+                <li>Xcode</li>
+                <li>Firebase</li>
+                <li>Google Maps API</li>
+              </ul>
+              <div class="project-links">
+                <a href="https://www.github.com/hhp227" target="_blank" rel="noreferrer">GitHub</a>
+                <a href="./홍희표 포폴 (2).PDF" target="_blank" rel="noreferrer">Portfolio PDF</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-media">
+              <img src="assets/concafe.jpg" alt="ConCafe 콘카 애플리케이션 화면" />
+            </div>
+            <div class="project-body">
+              <p class="project-type">Multi Platform</p>
+              <h3>콘카 ConCafe 앱</h3>
+              <p>
+                메이드카페 및 콘카페 정보를 공유하는 멀티플랫폼 서비스로 지도, 이벤트, 리뷰, 커뮤니티
+                기능을 구현했습니다.
+              </p>
+              <dl>
+                <div>
+                  <dt>담당 역할</dt>
+                  <dd>Android/iOS/Desktop 통합 코드 운영, 출시와 유지보수 진행</dd>
+                </div>
+                <div>
+                  <dt>주요 성과</dt>
+                  <dd>2026.03 ~ 2026.05 개인 프로젝트로 앱스토어 출시와 실시간 데이터 관리 구현</dd>
+                </div>
+              </dl>
+              <ul class="tags" aria-label="사용 기술">
+                <li>Android</li>
+                <li>Kotlin</li>
+                <li>SwiftUI</li>
+                <li>Firebase</li>
+                <li>Google Maps API</li>
+              </ul>
+              <div class="project-links">
+                <a href="https://www.github.com/hhp227" target="_blank" rel="noreferrer">GitHub</a>
+                <a href="./홍희표 포폴 (2).PDF" target="_blank" rel="noreferrer">Portfolio PDF</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-media">
+              <img src="assets/ifp-whiteboard.jpg" alt="IFP 전자칠판 안드로이드 애플리케이션 화면" />
+            </div>
+            <div class="project-body">
+              <p class="project-type">Embedded Android</p>
+              <h3>IFP 전자칠판 판서 앱</h3>
+              <p>
+                전자칠판 디바이스 내장 판서 앱의 UI, 사용자 상호작용, drawing 모듈 일부와 저장/불러오기
+                기능을 개발했습니다.
+              </p>
+              <dl>
+                <div>
+                  <dt>담당 역할</dt>
+                  <dd>Jetpack 기반 아키텍처 설계, 상호작용 UI, Save/Load 기능 개발</dd>
+                </div>
+                <div>
+                  <dt>주요 성과</dt>
+                  <dd>디바이스 내장 앱에서 필요한 작성, 저장, 재사용 흐름 구현</dd>
+                </div>
+              </dl>
+              <ul class="tags" aria-label="사용 기술">
+                <li>Android</li>
+                <li>Jetpack</li>
+                <li>Architecture Component</li>
+                <li>Drawing</li>
+              </ul>
+              <div class="project-links">
+                <a href="https://www.github.com/hhp227" target="_blank" rel="noreferrer">GitHub</a>
+                <a href="./홍희표 경력기술서_서술형.pdf" target="_blank" rel="noreferrer">상세 문서</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-media">
+              <img src="assets/gis-project.jpg" alt="공공기관 GIS 기반 웹사이트 기능 개발 화면" />
+            </div>
+            <div class="project-body">
+              <p class="project-type">GIS Web System</p>
+              <h3>김포시 공간정보시스템</h3>
+              <p>
+                Oracle DB와 GIS 서버를 연동해 공간 데이터 조회, 위치 이동, 웹 화면 기능을 구현했습니다.
+              </p>
+              <dl>
+                <div>
+                  <dt>담당 역할</dt>
+                  <dd>웹 파트 모듈 개발, 서버 데이터 CRUD, jQuery 기반 브라우저 화면 구현</dd>
+                </div>
+                <div>
+                  <dt>주요 성과</dt>
+                  <dd>PM 피드백을 반영하며 공공 시스템 기능 완성도와 유지보수 대응력 확보</dd>
+                </div>
+              </dl>
+              <ul class="tags" aria-label="사용 기술">
+                <li>JavaScript</li>
+                <li>jQuery</li>
+                <li>Oracle DB</li>
+                <li>GIS</li>
+              </ul>
+              <div class="project-links">
+                <a href="https://www.github.com/hhp227study" target="_blank" rel="noreferrer">GitHub</a>
+                <a href="./홍희표 이력서_hong227-e9ff8g.pdf" target="_blank" rel="noreferrer">이력서 PDF</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-media">
+              <img src="assets/profile-and-summary.jpg" alt="홍희표 프로필과 경력 요약 슬라이드" />
+            </div>
+            <div class="project-body">
+              <p class="project-type">Career Summary</p>
+              <h3>경력 및 기술 요약</h3>
+              <p>
+                Android, iOS, Spring, GIS, DB 경험을 기반으로 모바일 애플리케이션과 운영 시스템을 개발했습니다.
+              </p>
+              <dl>
+                <div>
+                  <dt>핵심 역량</dt>
+                  <dd>C#, Java, Kotlin, Swift, Spring Boot, Android, iOS, Oracle, MySQL, ArcGIS</dd>
+                </div>
+                <div>
+                  <dt>협업 도구</dt>
+                  <dd>GitLab, GitHub, JIRA, Gerrit 기반 업무 추적과 코드 리뷰</dd>
+                </div>
+              </dl>
+              <ul class="tags" aria-label="사용 기술">
+                <li>Android</li>
+                <li>iOS</li>
+                <li>Spring</li>
+                <li>Oracle</li>
+                <li>ArcGIS</li>
+              </ul>
+              <div class="project-links">
+                <a href="https://github.com/hhp227" target="_blank" rel="noreferrer">GitHub</a>
+                <a href="https://blog.naver.com/hong227" target="_blank" rel="noreferrer">Blog</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="about" class="section about">
+        <div class="section-heading">
+          <p class="eyebrow">About</p>
+          <h2>사용자 상호작용과 안정적인 기능 구현에 강점이 있습니다</h2>
+          <p>
+            앱 개발, 디바이스 내장 애플리케이션, 공공 웹 시스템, QA 자동화 경험을 연결해 제품을
+            검증 가능한 상태로 만드는 방식으로 일합니다.
+          </p>
+        </div>
+
+        <div class="about-layout">
+          <div class="about-copy">
+            <p>
+              Java와 Kotlin 기반 Android 애플리케이션 개발을 중심으로, 실제 사용자가 터치하고 확인하는
+              화면과 기능 흐름을 구현해 왔습니다. CameraX, Jetpack, OpenCV, ONNXRuntime처럼 제품
+              요구사항에 필요한 기술을 도입하고 기존 기능을 개선하는 업무에 익숙합니다.
+            </p>
+            <p>
+              Gerrit 코드리뷰, JIRA, GitLab, Confluence, Trello 등 협업 도구를 사용해 업무를 추적하고,
+              QA 경험을 바탕으로 기능의 동작 조건과 사용자 관점의 오류 가능성을 함께 확인합니다.
+            </p>
+          </div>
+
+          <div class="strength-list" aria-label="핵심 강점">
+            <article>
+              <h3>Android 실무 구현력</h3>
+              <p>무전 앱, 전자칠판, 디바이스 내장 앱에서 UI와 사용자 상호작용, 기능 유지보수를 담당했습니다.</p>
+            </article>
+            <article>
+              <h3>제품 품질 관점</h3>
+              <p>네이버 밴드 QA와 Selenium 자동화 경험을 통해 기능 검증과 개발자 커뮤니케이션을 이해합니다.</p>
+            </article>
+            <article>
+              <h3>기술 도입과 문제 해결</h3>
+              <p>OpenCV, ONNXRuntime, CameraX, GIS 서버 연동처럼 요구사항에 맞는 기술을 제품 흐름에 연결합니다.</p>
+            </article>
+            <article>
+              <h3>협업 기반 실행</h3>
+              <p>JIRA, Gerrit, GitLab, Confluence, Trello를 활용해 업무 흐름과 개발 문서를 관리했습니다.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="section contact">
+        <div class="contact-panel">
+          <div>
+            <p class="eyebrow">Contact</p>
+            <h2>추가 자료가 필요하면 연락 주세요</h2>
+            <p>
+              GitHub 프로필과 원본 이력서, 경력기술서, 포트폴리오 문서를 함께 확인할 수 있습니다.
+              이메일 주소는 원본 이력서에서 확인되는 값으로 업데이트하면 바로 연결됩니다.
+            </p>
+          </div>
+          <div class="contact-links" aria-label="연락처 링크">
+            <a href="mailto:">이메일 주소 업데이트 필요</a>
+            <a href="https://www.github.com/hhp227" target="_blank" rel="noreferrer">GitHub hhp227</a>
+            <a href="https://blog.naver.com/hong227" target="_blank" rel="noreferrer">Blog hong227</a>
+            <a href="./홍희표 이력서_hong227-e9ff8g.pdf" target="_blank" rel="noreferrer">이력서 PDF</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>© 2026 Hong Hee Pyo. Portfolio for recruiters.</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
