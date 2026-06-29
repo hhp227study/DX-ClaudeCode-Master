@@ -49,13 +49,6 @@ button:focus-visible {
   outline-offset: 4px;
 }
 
-#particle-canvas {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
 .site-header {
   position: sticky;
   top: 0;
@@ -696,9 +689,5 @@ dd {
     transition-duration: 1ms !important;
     animation-duration: 1ms !important;
     animation-iteration-count: 1 !important;
-  }
-
-  #particle-canvas {
-    display: none;
   }
 }
