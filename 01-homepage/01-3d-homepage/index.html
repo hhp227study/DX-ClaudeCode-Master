@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orbit Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="site-shell">
+      <canvas id="space-scene" aria-hidden="true"></canvas>
+
+      <header class="nav">
+        <a class="brand" href="#" aria-label="Orbit Studio 홈">
+          <span class="brand-mark"></span>
+          <span>Orbit Studio</span>
+        </a>
+        <nav class="nav-links" aria-label="주요 메뉴">
+          <a href="#mission">Mission</a>
+          <a href="#systems">Systems</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <a class="nav-action" href="#contact">Launch</a>
+      </header>
+
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">DEEP SPACE EXPERIENCE</p>
+          <h1 id="hero-title">우주를 항해하는 3D 홈페이지</h1>
+          <p class="hero-text">
+            행성 궤도, 별빛 입자, 유성의 움직임을 담은 몰입형 첫 화면으로
+            브랜드의 미래적인 인상을 선명하게 전달합니다.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#mission">탐사 시작</a>
+            <a class="ghost-button" href="#systems">시스템 보기</a>
+          </div>
+        </div>
+
+        <aside class="status-panel" aria-label="우주선 상태">
+          <div>
+            <span>Signal</span>
+            <strong>98.7%</strong>
+          </div>
+          <div>
+            <span>Orbit</span>
+            <strong>Stable</strong>
+          </div>
+          <div>
+            <span>Range</span>
+            <strong>42 AU</strong>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <section id="mission" class="content-band">
+      <div class="content-grid">
+        <div>
+          <p class="section-label">Mission</p>
+          <h2>첫 화면에서 바로 느껴지는 깊이감</h2>
+        </div>
+        <p>
+          배경 전체를 채우는 3D 씬은 마우스 움직임과 화면 크기에 반응합니다.
+          사용자는 정적인 이미지가 아니라 살아 있는 우주 공간에 진입한 느낌을
+          받습니다.
+        </p>
+      </div>
+    </section>
+
+    <section id="systems" class="feature-section">
+      <article class="feature-card">
+        <span>01</span>
+        <h3>Orbital Motion</h3>
+        <p>행성과 위성 궤도를 레이어로 배치해 자연스러운 시차를 만듭니다.</p>
+      </article>
+      <article class="feature-card">
+        <span>02</span>
+        <h3>Star Field</h3>
+        <p>수백 개의 별 입자가 깊이별로 움직이며 넓은 공간감을 만듭니다.</p>
+      </article>
+      <article class="feature-card">
+        <span>03</span>
+        <h3>Responsive UI</h3>
+        <p>모바일과 데스크톱에서 텍스트와 버튼이 겹치지 않도록 구성했습니다.</p>
+      </article>
+    </section>
+
+    <section id="contact" class="contact-band">
+      <div>
+        <p class="section-label">Ready</p>
+        <h2>새로운 궤도로 진입하세요</h2>
+      </div>
+      <a class="primary-button" href="mailto:hello@orbit-studio.example">Contact</a>
+    </section>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

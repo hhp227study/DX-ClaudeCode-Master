@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>홍길동 | 프론트엔드 개발자 포트폴리오</title>
+    <meta
+      name="description"
+      content="채용담당자를 위한 홍길동의 자기소개, 핵심 역량, 프로젝트 포트폴리오, 연락처를 담은 개인 홈페이지입니다."
+    />
+    <meta property="og:title" content="홍길동 | 프론트엔드 개발자 포트폴리오" />
+    <meta
+      property="og:description"
+      content="실무형 프로젝트 경험과 문제 해결 역량을 확인할 수 있는 자기소개 포트폴리오입니다."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#f6f7f2" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+    <header class="site-header">
+      <a class="brand" href="#home" aria-label="홈으로 이동">HGD</a>
+      <nav class="nav" aria-label="주요 메뉴">
+        <a class="nav-link active" href="#home">홈</a>
+        <a class="nav-link" href="#portfolio">포트폴리오</a>
+        <a class="nav-link" href="#about">자기소개</a>
+        <a class="nav-link" href="#contact">연락처</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="home" class="hero section">
+        <div class="hero-copy">
+          <p class="eyebrow">Frontend Developer Portfolio</p>
+          <h1>홍길동</h1>
+          <p class="role">사용자 경험과 비즈니스 목표를 함께 보는 프론트엔드 개발자</p>
+          <p class="intro">
+            인터랙션이 살아있는 웹 경험을 만들고, 채용담당자가 빠르게 검증할 수 있는 결과 중심의
+            프로젝트를 쌓아가고 있습니다.
+          </p>
+          <div class="hero-actions" aria-label="주요 이동 버튼">
+            <a class="button primary" href="#portfolio">포트폴리오 보기</a>
+            <a class="button secondary" href="#contact">연락하기</a>
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="지원자 역량 요약">
+          <div class="profile-panel">
+            <div class="profile-mark" aria-hidden="true">H</div>
+            <div>
+              <p class="panel-label">Core Focus</p>
+              <strong>UI Engineering</strong>
+            </div>
+          </div>
+          <div class="metric-grid">
+            <div>
+              <span>3+</span>
+              <p>대표 프로젝트</p>
+            </div>
+            <div>
+              <span>90+</span>
+              <p>성능 목표</p>
+            </div>
+            <div>
+              <span>100%</span>
+              <p>반응형 대응</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="portfolio" class="section portfolio">
+        <div class="section-heading">
+          <p class="eyebrow">Portfolio</p>
+          <h2>검증 가능한 프로젝트</h2>
+          <p>
+            각 프로젝트는 문제 정의, 담당 역할, 사용 기술, 결과를 중심으로 정리했습니다.
+          </p>
+        </div>
+
+        <div class="project-grid">
+          <article class="project-card">
+            <div class="project-media dashboard-media" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="project-body">
+              <p class="project-type">Web App</p>
+              <h3>채용 관리 대시보드</h3>
+              <p>
+                후보자 현황, 일정, 평가 상태를 한 화면에서 확인할 수 있는 운영형 대시보드입니다.
+              </p>
+              <dl>
+                <div>
+                  <dt>역할</dt>
+                  <dd>프론트엔드 설계 및 UI 구현</dd>
+                </div>
+                <div>
+                  <dt>성과</dt>
+                  <dd>반복 확인 작업을 줄이는 필터와 상태 UI 구성</dd>
+                </div>
+              </dl>
+              <ul class="tags" aria-label="사용 기술">
+                <li>React</li>
+                <li>TypeScript</li>
+                <li>Chart</li>
+              </ul>
+              <div class="project-links">
+                <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+                <a href="https://example.com/" target="_blank" rel="noreferrer">Demo</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-media commerce-media" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="project-body">
+              <p class="project-type">Commerce</p>
+              <h3>상품 탐색 인터페이스</h3>
+              <p>
+                사용자가 조건에 맞는 상품을 빠르게 찾을 수 있도록 검색, 정렬, 필터를 구현했습니다.
+              </p>
+              <dl>
+                <div>
+                  <dt>역할</dt>
+                  <dd>컴포넌트 구조화 및 반응형 화면 구현</dd>
+                </div>
+                <div>
+                  <dt>성과</dt>
+                  <dd>모바일 탐색 흐름과 카드 가독성 개선</dd>
+                </div>
+              </dl>
+              <ul class="tags" aria-label="사용 기술">
+                <li>Next.js</li>
+                <li>CSS</li>
+                <li>API</li>
+              </ul>
+              <div class="project-links">
+                <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+                <a href="https://example.com/" target="_blank" rel="noreferrer">Demo</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-media portfolio-media" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="project-body">
+              <p class="project-type">Portfolio</p>
+              <h3>인터랙티브 포트폴리오</h3>
+              <p>
+                부드러운 스크롤과 마우스 파티클을 적용해 전문성과 기억에 남는 경험을 함께 제공합니다.
+              </p>
+              <dl>
+                <div>
+                  <dt>역할</dt>
+                  <dd>정보 구조, 인터랙션, 접근성 구현</dd>
+                </div>
+                <div>
+                  <dt>성과</dt>
+                  <dd>채용 검토 흐름에 맞춘 섹션 구성</dd>
+                </div>
+              </dl>
+              <ul class="tags" aria-label="사용 기술">
+                <li>HTML</li>
+                <li>CSS</li>
+                <li>JavaScript</li>
+              </ul>
+              <div class="project-links">
+                <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+                <a href="https://example.com/" target="_blank" rel="noreferrer">Demo</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="about" class="section about">
+        <div class="section-heading">
+          <p class="eyebrow">About</p>
+          <h2>문제를 구조화하고 끝까지 구현합니다</h2>
+          <p>
+            채용담당자가 확인해야 할 역량을 중심으로, 일하는 방식과 성장 방향을 간결하게
+            정리했습니다.
+          </p>
+        </div>
+
+        <div class="about-layout">
+          <div class="about-copy">
+            <p>
+              저는 사용자가 실제로 마주하는 화면의 완성도를 중요하게 생각합니다. 요구사항을 화면
+              구조로 바꾸고, 컴포넌트와 상태 흐름을 정리해 유지보수 가능한 방식으로 구현합니다.
+            </p>
+            <p>
+              프로젝트를 진행할 때는 먼저 사용 목적과 검증 기준을 분명히 한 뒤, 빠르게 동작하는
+              결과물을 만들고 개선점을 반복해서 반영합니다.
+            </p>
+          </div>
+
+          <div class="strength-list" aria-label="핵심 강점">
+            <article>
+              <h3>명확한 UI 구조</h3>
+              <p>사용자가 빠르게 이해할 수 있는 정보 배치와 일관된 컴포넌트 설계를 지향합니다.</p>
+            </article>
+            <article>
+              <h3>실행 중심 개발</h3>
+              <p>아이디어를 실제 동작하는 화면으로 빠르게 옮기고, 결과 기준으로 개선합니다.</p>
+            </article>
+            <article>
+              <h3>디테일한 인터랙션</h3>
+              <p>스크롤, 포커스, 호버 상태처럼 경험을 완성하는 작은 움직임을 세심하게 다룹니다.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="section contact">
+        <div class="contact-panel">
+          <div>
+            <p class="eyebrow">Contact</p>
+            <h2>검토 후 편하게 연락 주세요</h2>
+            <p>
+              프로젝트 상세 내용, 협업 가능 여부, 추가 자료가 필요하다면 아래 채널로 연락할 수
+              있습니다.
+            </p>
+          </div>
+          <div class="contact-links" aria-label="연락처 링크">
+            <a href="mailto:hello@example.com">hello@example.com</a>
+            <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>© 2026 Hong Gil Dong. Portfolio for recruiters.</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
