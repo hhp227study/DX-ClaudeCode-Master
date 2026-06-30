@@ -14,6 +14,9 @@
   --red: #b55345;
   --shadow: 0 18px 48px rgba(18, 32, 38, 0.1);
   --header-height: 72px;
+  --content-width: 1680px;
+  --page-gutter: clamp(28px, 4vw, 96px);
+  --content-inset: clamp(56px, 8vw, 192px);
 }
 
 * {
@@ -57,7 +60,7 @@ button:focus-visible {
   align-items: center;
   justify-content: space-between;
   min-height: var(--header-height);
-  padding: 14px clamp(18px, 4vw, 56px);
+  padding: 14px var(--page-gutter);
   border-bottom: 1px solid rgba(215, 224, 227, 0.78);
   background: rgba(245, 247, 248, 0.88);
   backdrop-filter: blur(18px);
@@ -114,17 +117,17 @@ main,
 }
 
 .section {
-  width: min(1140px, calc(100% - 40px));
+  width: min(var(--content-width), calc(100% - var(--content-inset)));
   margin: 0 auto;
   padding: 96px 0;
 }
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.06fr) minmax(320px, 0.94fr);
+  grid-template-columns: minmax(0, 1.14fr) minmax(320px, 0.86fr);
   align-items: center;
   min-height: calc(100vh - var(--header-height));
-  gap: clamp(28px, 6vw, 72px);
+  gap: clamp(28px, 5vw, 96px);
   padding-top: 64px;
 }
 
@@ -182,7 +185,7 @@ h3 {
 }
 
 .intro {
-  max-width: 660px;
+  max-width: 760px;
   margin: 0;
   font-size: 1.08rem;
 }
@@ -405,7 +408,7 @@ h3 {
 }
 
 .section-heading {
-  max-width: 800px;
+  max-width: 920px;
   margin-bottom: 34px;
 }
 
@@ -416,7 +419,7 @@ h3 {
 
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
 
@@ -428,7 +431,8 @@ h3 {
 }
 
 .project-media {
-  min-height: 184px;
+  min-height: 0;
+  aspect-ratio: 16 / 9;
   background: var(--surface-strong);
 }
 
@@ -523,7 +527,7 @@ dd {
 
 .about-layout {
   display: grid;
-  grid-template-columns: 0.88fr 1.12fr;
+  grid-template-columns: minmax(320px, 0.78fr) minmax(0, 1.22fr);
   gap: 28px;
 }
 
@@ -538,6 +542,7 @@ dd {
 
 .strength-list {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 14px;
 }
 
@@ -562,7 +567,7 @@ dd {
 }
 
 .contact-panel p {
-  max-width: 680px;
+  max-width: 840px;
   margin: 16px 0 0;
 }
 
@@ -584,7 +589,7 @@ dd {
 }
 
 .footer {
-  width: min(1140px, calc(100% - 40px));
+  width: min(var(--content-width), calc(100% - var(--content-inset)));
   margin: 0 auto;
   padding: 0 0 32px;
   color: var(--muted);
@@ -601,13 +606,12 @@ dd {
   .hero {
     min-height: auto;
   }
-
-  .project-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .contact-links {
     width: 100%;
+  }
+
+  .project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -642,7 +646,7 @@ dd {
 
   .section,
   .footer {
-    width: min(100% - 28px, 1140px);
+    width: min(100% - 28px, var(--content-width));
   }
 
   .section {
