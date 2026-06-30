@@ -14,12 +14,27 @@
       content="무전 서비스, 전자칠판, GIS 시스템, QA 자동화 경험을 기반으로 한 Android 앱 개발자 포트폴리오입니다."
     />
     <meta property="og:type" content="website" />
-    <meta name="theme-color" content="#f5f7f8" />
+    <meta name="theme-color" content="#f1f2f8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+    />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <a class="skip-link" href="#portfolio">본문으로 건너뛰기</a>
+
     <header class="site-header">
-      <a class="brand" href="#home" aria-label="홈으로 이동">HHP</a>
+      <a class="brand" href="#home" aria-label="홈으로 이동">
+        <span class="brand-mark">HHP</span>
+        <span class="brand-status" aria-hidden="true"></span>
+      </a>
       <nav class="nav" aria-label="주요 메뉴">
         <a class="nav-link active" href="#home">홈</a>
         <a class="nav-link" href="#portfolio">포트폴리오</a>
@@ -30,13 +45,14 @@
 
     <main>
       <section id="home" class="section hero">
-        <div class="hero-copy">
-          <p class="eyebrow">Android Application Developer</p>
+        <div class="hero-lead reveal">
+          <p class="eyebrow">Android Engineer · 6Y+</p>
           <h1>홍희표</h1>
-          <p class="role">Kotlin, Java 기반으로 실제 디바이스와 사용 흐름을 끝까지 구현하는 개발자</p>
+          <span class="lead-rule" aria-hidden="true"></span>
+          <p class="role">Kotlin · Java로 실제 디바이스와 사용 흐름을 끝까지 구현하는 개발자</p>
           <p class="intro">
             무전 서비스, 전자칠판, GIS 공공 시스템, QA 자동화까지 제품의 화면과 기능이 사용자에게
-            안정적으로 전달되는 과정을 경험했습니다.
+            안정적으로 전달되는 과정을 처음부터 끝까지 책임져 왔습니다.
           </p>
           <div class="hero-actions" aria-label="주요 이동 버튼">
             <a class="button primary" href="#portfolio">프로젝트 보기</a>
@@ -44,45 +60,78 @@
           </div>
         </div>
 
-        <div class="hero-visual" aria-label="지원자 경력 요약">
-          <div class="device-preview">
-            <div class="phone-frame">
-              <div class="phone-status"></div>
-              <div class="android-symbol" aria-label="Android 개발 역량을 상징하는 심볼">
-                <span class="android-antenna left"></span>
-                <span class="android-antenna right"></span>
-                <span class="android-head">
-                  <i></i>
-                  <i></i>
-                </span>
-                <span class="android-body">
-                  <b class="arm left"></b>
-                  <b class="arm right"></b>
-                  <b class="leg left"></b>
-                  <b class="leg right"></b>
+        <aside class="identity reveal">
+          <div class="device" role="img" aria-label="홍희표의 모바일 프로필 화면 미리보기">
+            <span class="device-island" aria-hidden="true"></span>
+            <div class="device-screen">
+              <div class="status-bar" aria-hidden="true">
+                <span class="sb-time">9:41</span>
+                <span class="sb-icons">
+                  <svg class="sb-ic" viewBox="0 0 18 12" fill="currentColor">
+                    <rect x="0" y="8" width="3" height="4" rx="1" />
+                    <rect x="5" y="5" width="3" height="7" rx="1" />
+                    <rect x="10" y="2.5" width="3" height="9.5" rx="1" />
+                    <rect x="15" y="0" width="3" height="12" rx="1" />
+                  </svg>
+                  <svg class="sb-ic" viewBox="0 0 16 12" fill="currentColor">
+                    <path d="M8 11.4 0.8 4.3a10.2 10.2 0 0 1 14.4 0L8 11.4Z" />
+                  </svg>
+                  <svg class="sb-ic sb-batt" viewBox="0 0 26 12">
+                    <rect x="0.6" y="0.6" width="21.8" height="10.8" rx="3" fill="none" stroke="currentColor" stroke-opacity="0.45" />
+                    <rect x="2.4" y="2.4" width="13" height="7.2" rx="1.6" fill="currentColor" />
+                    <rect x="24" y="4" width="2" height="4" rx="1" fill="currentColor" fill-opacity="0.45" />
+                  </svg>
                 </span>
               </div>
+
+              <div class="app">
+                <div class="app-head">
+                  <span class="monogram" aria-hidden="true">
+                    <svg class="monogram-bot" viewBox="0 0 24 24" fill="#fff" fill-rule="evenodd">
+                      <path d="M16.61 15.15c-.46 0-.84-.37-.84-.83 0-.46.37-.83.84-.83.46 0 .83.37.83.83 0 .46-.37.83-.83.83m-9.2 0c-.46 0-.83-.37-.83-.83 0-.46.37-.83.83-.83.46 0 .83.37.83.83 0 .46-.37.83-.83.83m9.5-4.91 1.67-2.89c.09-.17.03-.38-.13-.47-.17-.1-.38-.04-.48.13l-1.69 2.93C14.85 9.3 13.46 9 12 9c-1.46 0-2.85.3-4.15.94L6.16 6.96c-.1-.17-.31-.23-.48-.13-.16.09-.22.3-.13.47l1.67 2.89C4.46 11.79 2.5 14.62 2.5 18h19c0-3.38-1.96-6.21-4.59-7.76Z" />
+                    </svg>
+                  </span>
+                  <div>
+                    <p class="id-name">홍희표</p>
+                    <p class="id-role">Android Application Developer</p>
+                  </div>
+                </div>
+
+                <p class="id-status"><span class="pulse" aria-hidden="true"></span>채용 검토 가능 · Seoul, KR</p>
+
+                <div class="id-metrics" aria-label="경력 요약 지표">
+                  <div><strong>6+</strong><span>YRS</span></div>
+                  <div><strong>4</strong><span>DOMAINS</span></div>
+                  <div><strong>6</strong><span>BUILDS</span></div>
+                </div>
+
+                <p class="app-label">핵심 스택</p>
+                <ul class="id-stack" aria-label="핵심 기술 스택">
+                  <li>Kotlin</li>
+                  <li>Java</li>
+                  <li>Jetpack</li>
+                  <li>CameraX</li>
+                  <li>Coroutines</li>
+                </ul>
+
+                <p class="app-label">최근 작업</p>
+                <ul class="app-feed">
+                  <li><span class="feed-ic"><img src="assets/concafe.png" alt="" loading="lazy" /></span><span class="feed-name">콘카 ConCafe</span><span class="feed-meta">26.05</span></li>
+                  <li><span class="feed-ic"><img src="assets/datemate.png" alt="" loading="lazy" /></span><span class="feed-name">데이트메이트</span><span class="feed-meta">26.02</span></li>
+                  <li><span class="feed-ic"><img src="assets/ptalk.jpg" alt="" loading="lazy" /></span><span class="feed-name">PTalk JMobile</span><span class="feed-meta">25.03</span></li>
+                </ul>
+
+                <a class="id-cta" href="assets/홍희표_CV_900227.pdf" target="_blank" rel="noreferrer">이력서 보기</a>
+              </div>
+
+              <span class="home-indicator" aria-hidden="true"></span>
             </div>
           </div>
-          <div class="metric-grid">
-            <div>
-              <span>6+</span>
-              <p>개발 경력</p>
-            </div>
-            <div>
-              <span>4</span>
-              <p>주요 도메인</p>
-            </div>
-            <div>
-              <span>Android</span>
-              <p>핵심 전문성</p>
-            </div>
-          </div>
-        </div>
+        </aside>
       </section>
 
       <section id="portfolio" class="section portfolio">
-        <div class="section-heading">
+        <div class="section-heading reveal">
           <p class="eyebrow">Portfolio</p>
           <h2>실무 흐름이 드러나는 프로젝트</h2>
           <p>
@@ -92,24 +141,27 @@
         </div>
 
         <div class="project-grid">
-          <article class="project-card">
+          <article class="project reveal">
             <div class="project-media">
-              <img src="assets/ptalk-jmobile.jpg" alt="PTalk JMobile 무전 애플리케이션 화면" />
+              <img src="assets/ptalk-jmobile.jpg" alt="PTalk JMobile 무전 애플리케이션 화면" loading="lazy" />
             </div>
             <div class="project-body">
-              <p class="project-type">Mobile Communication</p>
+              <p class="project-meta">
+                <span class="domain">Mobile Communication</span>
+                <span class="period">2023.01–25.03</span>
+              </p>
               <h3>PTalk JMobile Android 앱</h3>
-              <p>
+              <p class="project-desc">
                 무전 디바이스 기반 무전 앱에서 사운드 향상, 잡음 제거, 영상 공유 기능을 추가했습니다.
               </p>
-              <dl>
+              <dl class="project-facts">
                 <div>
                   <dt>담당 역할</dt>
                   <dd>Android 앱 개발, 기능 개선, 미디어 공유 기능 구현</dd>
                 </div>
                 <div>
                   <dt>주요 성과</dt>
-                  <dd>2023.01 ~ 2025.03 아이디스 재직 중 제품 기능 개선과 유지보수 수행</dd>
+                  <dd>아이디스 재직 중 제품 기능 개선과 유지보수 수행</dd>
                 </div>
               </dl>
               <ul class="tags" aria-label="사용 기술">
@@ -118,31 +170,37 @@
                 <li>Android Studio</li>
                 <li>Media</li>
               </ul>
-              <div class="project-links">
-                <a href="https://www.github.com/hhp227" target="_blank" rel="noreferrer">GitHub</a>
-                <a href="./홍희표_경력기술서.docx" target="_blank" rel="noreferrer">경력기술서</a>
+              <div class="project-points">
+                <p class="points-label">핵심 기여</p>
+                <ul class="points-list">
+                  <li>잡음 제거 · 사운드 품질 개선</li>
+                  <li>실시간 영상 공유 기능 구현</li>
+                </ul>
               </div>
             </div>
           </article>
 
-          <article class="project-card">
+          <article class="project reveal">
             <div class="project-media">
-              <img src="assets/datemate.jpg" alt="DateMate 데이팅 애플리케이션 화면" />
+              <img src="assets/datemate.jpg" alt="DateMate 데이팅 애플리케이션 화면" loading="lazy" />
             </div>
             <div class="project-body">
-              <p class="project-type">Personal Project</p>
+              <p class="project-meta">
+                <span class="domain">Personal Project</span>
+                <span class="period">2025.12–26.02</span>
+              </p>
               <h3>데이트메이트 DateMate 앱</h3>
-              <p>
+              <p class="project-desc">
                 위치 기반 데이팅 앱으로 사용자 취향 기반 매칭과 데이트 정보 제공 기능을 구현했습니다.
               </p>
-              <dl>
+              <dl class="project-facts">
                 <div>
                   <dt>담당 역할</dt>
                   <dd>Android/iOS 앱 기획 및 클라이언트 개발, 반응형 UI/UX 개선</dd>
                 </div>
                 <div>
                   <dt>주요 성과</dt>
-                  <dd>2025.12 ~ 2026.02 개인 프로젝트로 매칭, 게시글, 위치 기반 기능 구현</dd>
+                  <dd>개인 프로젝트로 매칭, 게시글, 위치 기반 기능 구현</dd>
                 </div>
               </dl>
               <ul class="tags" aria-label="사용 기술">
@@ -152,32 +210,38 @@
                 <li>Firebase</li>
                 <li>Google Maps API</li>
               </ul>
-              <div class="project-links">
-                <a href="https://www.github.com/hhp227" target="_blank" rel="noreferrer">GitHub</a>
-                <a href="./홍희표 포폴 (2).PDF" target="_blank" rel="noreferrer">Portfolio PDF</a>
+              <div class="project-points">
+                <p class="points-label">핵심 기여</p>
+                <ul class="points-list">
+                  <li>위치 기반 취향 매칭 구현</li>
+                  <li>Android · iOS 동시 개발</li>
+                </ul>
               </div>
             </div>
           </article>
 
-          <article class="project-card">
+          <article class="project reveal">
             <div class="project-media">
-              <img src="assets/concafe.jpg" alt="ConCafe 콘카 애플리케이션 화면" />
+              <img src="assets/concafe.jpg" alt="ConCafe 콘카 애플리케이션 화면" loading="lazy" />
             </div>
             <div class="project-body">
-              <p class="project-type">Multi Platform</p>
+              <p class="project-meta">
+                <span class="domain">Multi Platform</span>
+                <span class="period">2026.03–26.05</span>
+              </p>
               <h3>콘카 ConCafe 앱</h3>
-              <p>
+              <p class="project-desc">
                 메이드카페 및 콘카페 정보를 공유하는 멀티플랫폼 서비스로 지도, 이벤트, 리뷰, 커뮤니티
                 기능을 구현했습니다.
               </p>
-              <dl>
+              <dl class="project-facts">
                 <div>
                   <dt>담당 역할</dt>
                   <dd>Android/iOS/Desktop 통합 코드 운영, 출시와 유지보수 진행</dd>
                 </div>
                 <div>
                   <dt>주요 성과</dt>
-                  <dd>2026.03 ~ 2026.05 개인 프로젝트로 앱스토어 출시와 실시간 데이터 관리 구현</dd>
+                  <dd>개인 프로젝트로 앱스토어 출시와 실시간 데이터 관리 구현</dd>
                 </div>
               </dl>
               <ul class="tags" aria-label="사용 기술">
@@ -187,25 +251,31 @@
                 <li>Firebase</li>
                 <li>Google Maps API</li>
               </ul>
-              <div class="project-links">
-                <a href="https://www.github.com/hhp227" target="_blank" rel="noreferrer">GitHub</a>
-                <a href="./홍희표 포폴 (2).PDF" target="_blank" rel="noreferrer">Portfolio PDF</a>
+              <div class="project-points">
+                <p class="points-label">핵심 기여</p>
+                <ul class="points-list">
+                  <li>Android · iOS · Desktop 통합 운영</li>
+                  <li>App Store 출시 · 실시간 데이터</li>
+                </ul>
               </div>
             </div>
           </article>
 
-          <article class="project-card">
+          <article class="project reveal">
             <div class="project-media">
-              <img src="assets/ifp-whiteboard.jpg" alt="IFP 전자칠판 안드로이드 애플리케이션 화면" />
+              <img src="assets/ifp-whiteboard.jpg" alt="IFP 전자칠판 안드로이드 애플리케이션 화면" loading="lazy" />
             </div>
             <div class="project-body">
-              <p class="project-type">Embedded Android</p>
+              <p class="project-meta">
+                <span class="domain">Embedded Android</span>
+                <span class="period">재직 프로젝트</span>
+              </p>
               <h3>IFP 전자칠판 판서 앱</h3>
-              <p>
+              <p class="project-desc">
                 전자칠판 디바이스 내장 판서 앱의 UI, 사용자 상호작용, drawing 모듈 일부와 저장/불러오기
                 기능을 개발했습니다.
               </p>
-              <dl>
+              <dl class="project-facts">
                 <div>
                   <dt>담당 역할</dt>
                   <dd>Jetpack 기반 아키텍처 설계, 상호작용 UI, Save/Load 기능 개발</dd>
@@ -221,24 +291,30 @@
                 <li>Architecture Component</li>
                 <li>Drawing</li>
               </ul>
-              <div class="project-links">
-                <a href="https://www.github.com/hhp227" target="_blank" rel="noreferrer">GitHub</a>
-                <a href="./홍희표 경력기술서_서술형.pdf" target="_blank" rel="noreferrer">상세 문서</a>
+              <div class="project-points">
+                <p class="points-label">핵심 기여</p>
+                <ul class="points-list">
+                  <li>Jetpack 기반 아키텍처 설계</li>
+                  <li>판서 Save / Load 흐름 구현</li>
+                </ul>
               </div>
             </div>
           </article>
 
-          <article class="project-card">
+          <article class="project reveal">
             <div class="project-media">
-              <img src="assets/gis-project.jpg" alt="공공기관 GIS 기반 웹사이트 기능 개발 화면" />
+              <img src="assets/gis-project.jpg" alt="공공기관 GIS 기반 웹사이트 기능 개발 화면" loading="lazy" />
             </div>
             <div class="project-body">
-              <p class="project-type">GIS Web System</p>
+              <p class="project-meta">
+                <span class="domain">GIS Web System</span>
+                <span class="period">공공 SI</span>
+              </p>
               <h3>김포시 공간정보시스템</h3>
-              <p>
+              <p class="project-desc">
                 Oracle DB와 GIS 서버를 연동해 공간 데이터 조회, 위치 이동, 웹 화면 기능을 구현했습니다.
               </p>
-              <dl>
+              <dl class="project-facts">
                 <div>
                   <dt>담당 역할</dt>
                   <dd>웹 파트 모듈 개발, 서버 데이터 CRUD, jQuery 기반 브라우저 화면 구현</dd>
@@ -254,24 +330,30 @@
                 <li>Oracle DB</li>
                 <li>GIS</li>
               </ul>
-              <div class="project-links">
-                <a href="https://www.github.com/hhp227study" target="_blank" rel="noreferrer">GitHub</a>
-                <a href="./홍희표 이력서_hong227-e9ff8g.pdf" target="_blank" rel="noreferrer">이력서 PDF</a>
+              <div class="project-points">
+                <p class="points-label">핵심 기여</p>
+                <ul class="points-list">
+                  <li>Oracle DB · GIS 서버 연동</li>
+                  <li>공간 데이터 CRUD 구현</li>
+                </ul>
               </div>
             </div>
           </article>
 
-          <article class="project-card">
+          <article class="project reveal">
             <div class="project-media">
-              <img src="assets/profile-and-summary.jpg" alt="홍희표 프로필과 경력 요약 슬라이드" />
+              <img src="assets/profile-and-summary.jpg" alt="홍희표 프로필과 경력 요약 슬라이드" loading="lazy" />
             </div>
             <div class="project-body">
-              <p class="project-type">Career Summary</p>
+              <p class="project-meta">
+                <span class="domain">Career Summary</span>
+                <span class="period">Overview</span>
+              </p>
               <h3>경력 및 기술 요약</h3>
-              <p>
+              <p class="project-desc">
                 Android, iOS, Spring, GIS, DB 경험을 기반으로 모바일 애플리케이션과 운영 시스템을 개발했습니다.
               </p>
-              <dl>
+              <dl class="project-facts">
                 <div>
                   <dt>핵심 역량</dt>
                   <dd>C#, Java, Kotlin, Swift, Spring Boot, Android, iOS, Oracle, MySQL, ArcGIS</dd>
@@ -288,9 +370,12 @@
                 <li>Oracle</li>
                 <li>ArcGIS</li>
               </ul>
-              <div class="project-links">
-                <a href="https://github.com/hhp227" target="_blank" rel="noreferrer">GitHub</a>
-                <a href="https://blog.naver.com/hong227" target="_blank" rel="noreferrer">Blog</a>
+              <div class="project-points">
+                <p class="points-label">핵심 기여</p>
+                <ul class="points-list">
+                  <li>모바일 · 백엔드 · GIS 전 영역</li>
+                  <li>앱 출시 · 운영 · 코드리뷰 경험</li>
+                </ul>
               </div>
             </div>
           </article>
@@ -298,7 +383,7 @@
       </section>
 
       <section id="about" class="section about">
-        <div class="section-heading">
+        <div class="section-heading reveal">
           <p class="eyebrow">About</p>
           <h2>사용자 상호작용과 안정적인 기능 구현에 강점이 있습니다</h2>
           <p>
@@ -308,7 +393,7 @@
         </div>
 
         <div class="about-layout">
-          <div class="about-copy">
+          <div class="about-copy reveal">
             <p>
               Java와 Kotlin 기반 Android 애플리케이션 개발을 중심으로, 실제 사용자가 터치하고 확인하는
               화면과 기능 흐름을 구현해 왔습니다. CameraX, Jetpack, OpenCV, ONNXRuntime처럼 제품
@@ -321,19 +406,23 @@
           </div>
 
           <div class="strength-list" aria-label="핵심 강점">
-            <article>
+            <article class="strength reveal">
+              <p class="strength-kicker">Build</p>
               <h3>Android 실무 구현력</h3>
               <p>무전 앱, 전자칠판, 디바이스 내장 앱에서 UI와 사용자 상호작용, 기능 유지보수를 담당했습니다.</p>
             </article>
-            <article>
+            <article class="strength reveal">
+              <p class="strength-kicker">Verify</p>
               <h3>제품 품질 관점</h3>
               <p>네이버 밴드 QA와 Selenium 자동화 경험을 통해 기능 검증과 개발자 커뮤니케이션을 이해합니다.</p>
             </article>
-            <article>
+            <article class="strength reveal">
+              <p class="strength-kicker">Adopt</p>
               <h3>기술 도입과 문제 해결</h3>
               <p>OpenCV, ONNXRuntime, CameraX, GIS 서버 연동처럼 요구사항에 맞는 기술을 제품 흐름에 연결합니다.</p>
             </article>
-            <article>
+            <article class="strength reveal">
+              <p class="strength-kicker">Ship</p>
               <h3>협업 기반 실행</h3>
               <p>JIRA, Gerrit, GitLab, Confluence, Trello를 활용해 업무 흐름과 개발 문서를 관리했습니다.</p>
             </article>
@@ -342,27 +431,31 @@
       </section>
 
       <section id="contact" class="section contact">
-        <div class="contact-panel">
-          <div>
+        <div class="contact-panel reveal">
+          <div class="contact-copy">
             <p class="eyebrow">Contact</p>
             <h2>추가 자료가 필요하면 연락 주세요</h2>
             <p>
-              GitHub 프로필과 원본 이력서, 경력기술서, 포트폴리오 문서를 함께 확인할 수 있습니다.
-              이메일 주소는 원본 이력서에서 확인되는 값으로 업데이트하면 바로 연결됩니다.
+              GitHub 프로필과 이력서, 경력기술서, 포트폴리오 문서를 함께 확인할 수 있습니다.
+              가장 빠른 연락은 이메일이며 평일 기준 빠르게 회신드립니다.
             </p>
           </div>
           <div class="contact-links" aria-label="연락처 링크">
-            <a href="mailto:">이메일 주소 업데이트 필요</a>
-            <a href="https://www.github.com/hhp227" target="_blank" rel="noreferrer">GitHub hhp227</a>
-            <a href="https://blog.naver.com/hong227" target="_blank" rel="noreferrer">Blog hong227</a>
-            <a href="./홍희표 이력서_hong227-e9ff8g.pdf" target="_blank" rel="noreferrer">이력서 PDF</a>
+            <a class="contact-primary" href="mailto:hhp0227@gmail.com">
+              <span>이메일 보내기</span>
+              <small>hhp0227@gmail.com</small>
+            </a>
+            <a href="https://www.github.com/hhp227" target="_blank" rel="noreferrer">GitHub · hhp227</a>
+            <a href="https://blog.naver.com/hong227" target="_blank" rel="noreferrer">Blog · hong227</a>
+            <a href="assets/홍희표_CV_900227.pdf" target="_blank" rel="noreferrer">이력서 PDF</a>
           </div>
         </div>
       </section>
     </main>
 
     <footer class="footer">
-      <p>© 2026 Hong Hee Pyo. Portfolio for recruiters.</p>
+      <p>© 2026 Hong Hee Pyo</p>
+      <p class="footer-note">Android Application Developer · Portfolio</p>
     </footer>
 
     <script src="script.js"></script>
