@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>CatchRhy Design Template</title>
+<style>
+/* ═══════════════ 인쇄 설정: A4 가로 ═══════════════ */
+@page { size: A4 landscape; margin: 0; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: #120a1e; }
+body {
+  font-family: 'Segoe UI', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.mono { font-family: 'Cascadia Mono', Consolas, 'Courier New', monospace; }
+
+.page {
+  width: 297mm; height: 210mm;
+  padding: 10mm 12mm;
+  page-break-after: always;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(160deg, #1a1028, #2b1440);
+}
+.page:last-child { page-break-after: auto; }
+
+/* 페이지 헤더 */
+.eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: 3px;
+  color: #ff9cc0; text-transform: uppercase;
+}
+.ptitle { font-size: 26px; font-weight: 900; margin: 2px 0 2px; }
+.pdesc { font-size: 11.5px; color: #cbb8e8; margin-bottom: 14px; }
+.pagenum {
+  position: absolute; bottom: 8mm; right: 12mm;
+  font-size: 9px; color: rgba(255,255,255,0.35); letter-spacing: 2px;
+}
+.footmark {
+  position: absolute; bottom: 8mm; left: 12mm;
+  font-size: 9px; color: rgba(255,255,255,0.35); letter-spacing: 1px;
+}
+
+/* ═══════════════ 표지 ═══════════════ */
+.cover { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.cover .biglogo { font-size: 84px; font-weight: 900; letter-spacing: 2px; }
+.cover .biglogo em { font-style: normal; color: #ff5c9e; }
+.cover .tag { font-size: 17px; color: #cbb8e8; margin-top: 6px; }
+.cover .doc { font-size: 24px; font-weight: 800; margin-top: 34px; letter-spacing: 6px; color: #ffd93d; }
+.cover .meta { margin-top: 26px; font-size: 11px; color: rgba(255,255,255,0.55); line-height: 2; }
+.cover-bubbles { position: absolute; inset: 0; pointer-events: none; }
+.cb { position: absolute; border-radius: 50%; }
+
+/* ═══════════════ 컬러 페이지 ═══════════════ */
+.swgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.sw {
+  border-radius: 12px; overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+}
+.sw .chip { height: 52px; }
+.sw .info { padding: 7px 10px 8px; }
+.sw .nm { font-size: 11.5px; font-weight: 800; }
+.sw .hx { font-size: 10px; color: #ffd93d; margin-top: 1px; }
+.sw .us { font-size: 9.5px; color: #cbb8e8; margin-top: 3px; line-height: 1.45; }
+.sechead {
+  font-size: 11px; font-weight: 800; letter-spacing: 2px; color: #ff9cc0;
+  margin: 14px 0 8px; text-transform: uppercase;
+}
+.sechead:first-of-type { margin-top: 0; }
+.swgrid.five { grid-template-columns: repeat(5, 1fr); }
+.swgrid.three { grid-template-columns: repeat(3, 1fr); }
+
+/* ═══════════════ 타이포 페이지 ═══════════════ */
+.typerow {
+  display: flex; align-items: center; gap: 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.09);
+  padding: 7px 2px;
+}
+.typerow .sample { flex: 1 1 auto; white-space: nowrap; overflow: hidden; }
+.typerow .spec { flex: 0 0 300px; text-align: right; }
+.typerow .spec .n { font-size: 11px; font-weight: 800; color: #fff; }
+.typerow .spec .d { font-size: 9.5px; color: #cbb8e8; margin-top: 1px; }
+
+/* ═══════════════ 제품 컴포넌트 (globals.css 미러) ═══════════════ */
+.logo { font-size: 34px; font-weight: 900; letter-spacing: 1px; }
+.logo em { font-style: normal; color: #ff5c9e; }
+.tagline { color: #cbb8e8; font-size: 14px; }
+.btn {
+  appearance: none; border: none; border-radius: 999px;
+  padding: 16px 42px; font-size: 17px; font-weight: 800;
+  background: #ff5c9e; color: #fff; display: inline-block; text-decoration: none;
+}
+.btn.secondary { background: rgba(255,255,255,0.16); font-size: 14px; padding: 12px 28px; }
+.btn.small { font-size: 13px; padding: 10px 20px; }
+.btn.disabled { opacity: 0.4; }
+.card {
+  width: 100%;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 16px; padding: 16px; text-align: left;
+}
+.row { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; }
+.dim { color: #cbb8e8; font-size: 12px; line-height: 1.7; }
+.badge {
+  display: inline-block; border-radius: 999px; padding: 3px 10px;
+  font-size: 11px; font-weight: 700;
+  background: rgba(255,92,158,0.22); color: #ff9cc0;
+}
+.inputx {
+  width: 100%; background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px; padding: 12px; color: #fff; font-size: 15px;
+  font-family: inherit;
+}
+.inputx.ph { color: rgba(255,255,255,0.4); }
+.selectx {
+  background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px; padding: 10px 14px; color: #fff; font-size: 14px; display: inline-block;
+}
+.range { position: relative; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.25); width: 100%; }
+.range .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 62%; background: #ff5c9e; border-radius: 2px; }
+.range .knob {
+  position: absolute; left: 62%; top: 50%; transform: translate(-50%,-50%);
+  width: 14px; height: 14px; border-radius: 50%; background: #ff5c9e;
+}
+.tabs { display: inline-flex; gap: 4px; background: rgba(0,0,0,0.45); border-radius: 999px; padding: 4px; }
+.tabs span { border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 700; color: #cbb8e8; }
+.tabs span.active { background: #ff5c9e; color: #fff; }
+.toast {
+  display: inline-block; background: rgba(0,0,0,0.8); border-radius: 999px;
+  padding: 10px 18px; font-size: 13px; white-space: nowrap;
+}
+.hud-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px; width: 44px; height: 44px; font-size: 16px;
+  background: rgba(0,0,0,0.55); color: #fff;
+}
+.hudpanel { display: inline-block; background: rgba(0,0,0,0.45); border-radius: 12px; padding: 8px 16px; text-align: center; }
+.hudpanel .lb { font-size: 9px; font-weight: 700; color: #ff9cc0; letter-spacing: 1px; }
+.hudpanel .vl { font-size: 20px; font-weight: 800; }
+.bubble {
+  width: 74px; height: 74px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 700; color: #fff;
+}
+.bubble.catch { background: radial-gradient(circle at 35% 35%, #ffd3e6, #ff5c9e); }
+.bubble.decoy { background: radial-gradient(circle at 35% 35%, #e2d6ff, #8f6bdf); }
+.ringwrap { position: relative; display: inline-block; }
+.ring {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+  width: 100px; height: 100px; border-radius: 50%;
+  border: 2.5px solid rgba(255,255,255,0.85);
+}
+.judge { font-weight: 800; font-size: 19px; }
+
+/* 컴포넌트 페이지 레이아웃 */
+.compgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 9px; }
+.comp {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 14px; padding: 9px 12px;
+}
+.comp h4 { font-size: 11px; font-weight: 800; letter-spacing: 1.5px; color: #ff9cc0; text-transform: uppercase; margin-bottom: 7px; }
+.comp .body { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.comp .note { font-size: 9.5px; color: #cbb8e8; margin-top: 7px; line-height: 1.5; }
+
+/* ═══════════════ 폰 프레임 ═══════════════ */
+.phones { display: flex; gap: 16px; justify-content: center; align-items: flex-start; }
+.phwrap { text-align: center; }
+.phlabel { font-size: 11px; font-weight: 800; margin-bottom: 6px; color: #fff; }
+.phlabel small { display: block; font-weight: 400; font-size: 9px; color: #cbb8e8; margin-top: 1px; }
+.frame {
+  border-radius: 26px; overflow: hidden;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  box-shadow: 0 14px 44px rgba(0,0,0,0.45);
+  position: relative;
+}
+.vp {
+  width: 390px; height: 844px;
+  transform-origin: 0 0; position: absolute; left: 0; top: 0;
+  background: linear-gradient(160deg, #1a1028, #2b1440);
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+}
+/* scale 0.66 (3-up) */
+.s66 { width: 258px; height: 558px; }
+.s66 .vp { transform: scale(0.66); }
+/* scale 0.58 (4-up) */
+.s58 { width: 227px; height: 490px; }
+.s58 .vp { transform: scale(0.58); }
+
+.vp.center { justify-content: center; gap: 14px; padding: 24px; }
+.vp.top { justify-content: flex-start; gap: 18px; padding: 24px; }
+.vp.playbg { background: linear-gradient(180deg, #241a33 0%, #17101f 55%, #0d0913 100%); }
+
+/* ═══════════════ 룰/레이아웃 페이지 ═══════════════ */
+.rulegrid { display: grid; grid-template-columns: 300px 1fr 1fr; gap: 14px; }
+.rtable { width: 100%; border-collapse: collapse; font-size: 10.5px; }
+.rtable th {
+  text-align: left; font-size: 9px; letter-spacing: 1.5px; color: #ff9cc0;
+  text-transform: uppercase; padding: 4px 8px; border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+.rtable td { padding: 4.5px 8px; border-bottom: 1px solid rgba(255,255,255,0.07); color: #e8ddf5; }
+.rtable td:first-child { font-weight: 700; color: #fff; }
+.rtable td.v { color: #ffd93d; font-family: 'Cascadia Mono', Consolas, monospace; font-size: 10px; }
+.flow { display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; margin-top: 8px; white-space: nowrap; }
+.flow .st {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 999px; padding: 6px 12px; font-size: 10.5px; font-weight: 700;
+}
+.flow .st.hot { background: #ff5c9e; border-color: #ff5c9e; }
+.flow .ar { color: #ff9cc0; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ 1. 표지 ═══════════════════════ -->
+<div class="page cover">
+  <div class="cover-bubbles">
+    <div class="cb" style="left:8%;  top:16%; width:110px; height:110px; background: radial-gradient(circle at 35% 35%, #ffd3e6, #ff5c9e); opacity:.85;"></div>
+    <div class="cb" style="left:16%; top:62%; width:64px;  height:64px;  background: radial-gradient(circle at 35% 35%, #e2d6ff, #8f6bdf); opacity:.7;"></div>
+    <div class="cb" style="right:10%; top:22%; width:72px; height:72px;  background: radial-gradient(circle at 35% 35%, #e2d6ff, #8f6bdf); opacity:.7;"></div>
+    <div class="cb" style="right:16%; top:60%; width:130px; height:130px; background: radial-gradient(circle at 35% 35%, #ffd3e6, #ff5c9e); opacity:.85;"></div>
+    <div class="cb" style="right:30%; top:80%; width:44px; height:44px;  background: radial-gradient(circle at 35% 35%, #fff2c2, #ffd93d); opacity:.8;"></div>
+  </div>
+  <div class="biglogo">Catch<em>Rhy</em></div>
+  <div class="tag">카메라 앞에서 손으로 버블을 잡는 리듬게임 · Catch the Rhythm!</div>
+  <div class="doc">DESIGN TEMPLATE</div>
+  <div class="meta">
+    v1.0 · 2026-07-07 · 소스: web/app/globals.css · lib/engine/game.ts · lib/engine/endcard.ts<br />
+    모바일 우선 390×844 (max-width 480) · 다크 전용 (color-scheme: dark) · 렌더러 Canvas 2D
+  </div>
+</div>
+
+<!-- ═══════════════════════ 2. 컬러 ═══════════════════════ -->
+<div class="page">
+  <div class="eyebrow">CatchRhy Design System · 01</div>
+  <div class="ptitle">Color</div>
+  <div class="pdesc">네온 핑크를 주역으로 하는 다크 퍼플 팔레트. 배경은 항상 160° 그라데이션이며, 표면은 흰색/검정 알파 레이어로만 쌓는다.</div>
+
+  <div class="sechead">Brand</div>
+  <div class="swgrid">
+    <div class="sw"><div class="chip" style="background:#ff5c9e"></div><div class="info"><div class="nm">Pink · Primary</div><div class="hx mono">#FF5C9E</div><div class="us">CTA 버튼, 로고 강조(Rhy), catch 버블, 활성 탭</div></div></div>
+    <div class="sw"><div class="chip" style="background:#ff9cc0"></div><div class="info"><div class="nm">Pink Soft</div><div class="hx mono">#FF9CC0</div><div class="us">HUD 라벨(SCORE·COMBO), 점수 숫자, 배지 텍스트</div></div></div>
+    <div class="sw"><div class="chip" style="background:#8f6bdf"></div><div class="info"><div class="nm">Purple · Secondary</div><div class="hx mono">#8F6BDF</div><div class="us">함정(decoy) 버블 — "잡으면 안 되는 것"의 색</div></div></div>
+    <div class="sw"><div class="chip" style="background:#ffd93d"></div><div class="info"><div class="nm">Gold · Accent</div><div class="hx mono">#FFD93D</div><div class="us">랭크, PERFECT, 콤보 배율, 포즈 안내 — "보상"의 색</div></div></div>
+    <div class="sw"><div class="chip" style="background:#1a1028"></div><div class="info"><div class="nm">BG 1</div><div class="hx mono">#1A1028</div><div class="us">배경 그라데이션 시작점</div></div></div>
+    <div class="sw"><div class="chip" style="background:#2b1440"></div><div class="info"><div class="nm">BG 2</div><div class="hx mono">#2B1440</div><div class="us">배경 그라데이션 끝점</div></div></div>
+    <div class="sw"><div class="chip" style="background:#cbb8e8"></div><div class="info"><div class="nm">Text Dim</div><div class="hx mono">#CBB8E8</div><div class="us">보조 텍스트, 태그라인, 캡션</div></div></div>
+    <div class="sw"><div class="chip" style="background:#ffffff"></div><div class="info"><div class="nm">White</div><div class="hx mono">#FFFFFF</div><div class="us">본문·제목 기본 텍스트</div></div></div>
+  </div>
+
+  <div class="sechead">Judgement — 판정 피드백 전용</div>
+  <div class="swgrid five">
+    <div class="sw"><div class="chip" style="background:#ffd93d"></div><div class="info"><div class="nm">PERFECT!</div><div class="hx mono">#FFD93D</div><div class="us">±80ms</div></div></div>
+    <div class="sw"><div class="chip" style="background:#6bffb0"></div><div class="info"><div class="nm">GREAT! · Full Combo</div><div class="hx mono">#6BFFB0</div><div class="us">±160ms</div></div></div>
+    <div class="sw"><div class="chip" style="background:#7ec8ff"></div><div class="info"><div class="nm">GOOD</div><div class="hx mono">#7EC8FF</div><div class="us">±250ms</div></div></div>
+    <div class="sw"><div class="chip" style="background:#aaaaaa"></div><div class="info"><div class="nm">MISS</div><div class="hx mono">#AAAAAA</div><div class="us">윈도우 초과</div></div></div>
+    <div class="sw"><div class="chip" style="background:#ff6b81"></div><div class="info"><div class="nm">DECOY X!</div><div class="hx mono">#FF6B81</div><div class="us">함정 접촉 −100점</div></div></div>
+  </div>
+
+  <div class="sechead">Surfaces &amp; Gradients — 알파 레이어</div>
+  <div class="swgrid five">
+    <div class="sw"><div class="chip" style="background:linear-gradient(160deg,#1a1028,#2b1440)"></div><div class="info"><div class="nm">Background</div><div class="hx mono">linear 160°</div><div class="us">BG1 → BG2, 모든 화면 공통</div></div></div>
+    <div class="sw"><div class="chip" style="background:radial-gradient(circle at 35% 35%,#ffd3e6,#ff5c9e)"></div><div class="info"><div class="nm">Catch Bubble</div><div class="hx mono">#FFD3E6→#FF5C9E</div><div class="us">radial, 하이라이트 좌상단 35%</div></div></div>
+    <div class="sw"><div class="chip" style="background:radial-gradient(circle at 35% 35%,#e2d6ff,#8f6bdf)"></div><div class="info"><div class="nm">Decoy Bubble</div><div class="hx mono">#E2D6FF→#8F6BDF</div><div class="us">radial, 함정 노트</div></div></div>
+    <div class="sw"><div class="chip" style="background:linear-gradient(160deg,#1a1028,#2b1440)"><div style="margin:8px; height:36px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.10); border-radius:8px;"></div></div><div class="info"><div class="nm">Card</div><div class="hx mono">#FFF 7% / b 10%</div><div class="us">곡 카드, 설정 카드, 모달</div></div></div>
+    <div class="sw"><div class="chip" style="background:linear-gradient(160deg,#1a1028,#2b1440)"><div style="margin:8px; height:36px; background:rgba(0,0,0,0.5); border-radius:8px;"></div></div><div class="info"><div class="nm">HUD Panel</div><div class="hx mono">#000 45–55%</div><div class="us">스코어·타깃·미션 패널 (카메라 위)</div></div></div>
+  </div>
+  <div class="dim" style="margin-top:10px; font-size:10px;">
+    오버레이: <span class="mono" style="color:#ffd93d">rgba(20,10,35,.72) + blur 4px</span> (일시정지·결과) ·
+    모달 스크림: <span class="mono" style="color:#ffd93d">rgba(10,5,20,.6) + blur 3px</span> ·
+    토스트: <span class="mono" style="color:#ffd93d">rgba(0,0,0,.8)</span> ·
+    입력 필드: <span class="mono" style="color:#ffd93d">rgba(0,0,0,.3) / border #FFF 15%</span> ·
+    엔드카드 스크림: <span class="mono" style="color:#ffd93d">rgba(20,10,35,.78)</span>
+  </div>
+  <div class="footmark">CATCHRHY · DESIGN TEMPLATE v1.0</div>
+  <div class="pagenum">02 / 07</div>
+</div>
+
+<!-- ═══════════════════════ 3. 타이포그래피 ═══════════════════════ -->
+<div class="page">
+  <div class="eyebrow">CatchRhy Design System · 02</div>
+  <div class="ptitle">Typography</div>
+  <div class="pdesc">
+    시스템 산세리프 단일 패밀리: <span class="mono" style="color:#ffd93d">-apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif</span>.
+    굵기 대비(400↔900)와 크기 점프로 위계를 만든다. 로고는 항상 Catch(흰색)+Rhy(핑크) 조합, 자간 1px.
+  </div>
+
+  <div class="typerow"><div class="sample" style="font-size:56px; font-weight:900; text-shadow:0 4px 30px rgba(255,92,158,0.8);">3</div><div class="spec"><div class="n">Countdown</div><div class="d">120px · 900 · glow rgba(255,92,158,.8) 0 4 30</div></div></div>
+  <div class="typerow"><div class="sample" style="font-size:48px; font-weight:900; color:#ffd93d; text-shadow:0 4px 30px rgba(255,217,61,0.5);">SSS</div><div class="spec"><div class="n">Result Rank</div><div class="d">84px · 900 · Gold · glow rgba(255,217,61,.5)</div></div></div>
+  <div class="typerow"><div class="sample logo">Catch<em>Rhy</em></div><div class="spec"><div class="n">Logo</div><div class="d">34px · 900 · letter-spacing 1px · em=Pink</div></div></div>
+  <div class="typerow"><div class="sample" style="font-size:30px; font-weight:800; color:#ff9cc0;">128,400</div><div class="spec"><div class="n">Result Score</div><div class="d">30px · 800 · Pink Soft</div></div></div>
+  <div class="typerow"><div class="sample" style="font-size:17px; font-weight:800;">곡 제목 · 버튼 레이블 · PLAY</div><div class="spec"><div class="n">Title / Button</div><div class="d">17px · 800 (secondary 14px · small 13px)</div></div></div>
+  <div class="typerow"><div class="sample" style="font-size:15px;">본문 · 입력 필드 텍스트</div><div class="spec"><div class="n">Body / Input</div><div class="d">15px · 400</div></div></div>
+  <div class="typerow"><div class="sample tagline">카메라 앞에서 손으로 버블을 잡는 리듬게임</div><div class="spec"><div class="n">Tagline</div><div class="d">14px · 400 · Text Dim</div></div></div>
+  <div class="typerow"><div class="sample" style="font-size:13px; color:#e8ddf5;">Accuracy · PERFECT / GREAT / GOOD · 결과 테이블</div><div class="spec"><div class="n">Table / Toast</div><div class="d">13px · 400 (값 700 우측정렬) · #E8DDF5</div></div></div>
+  <div class="typerow"><div class="sample dim">보조 설명 · 전면 카메라를 사용합니다 · 영상은 기기에서만 처리됩니다</div><div class="spec"><div class="n">Dim / Caption</div><div class="d">12px · 400 · line-height 1.7 · Text Dim</div></div></div>
+  <div class="typerow" style="border-bottom:none;"><div class="sample"><span class="badge">NEW RECORD!</span>&nbsp;&nbsp;<span class="badge">+15ms</span></div><div class="spec"><div class="n">Badge</div><div class="d">11px · 700 · pill · Pink 22% / Pink Soft</div></div></div>
+
+  <div class="sechead" style="margin-top:16px;">Canvas HUD 스케일 규칙 (반응형)</div>
+  <div class="dim" style="font-size:10.5px;">
+    캔버스 내 텍스트는 px 고정이 아니라 <span class="mono" style="color:#ffd93d">base = min(w, h)</span> 비례:
+    HUD 기준 크기 <span class="mono" style="color:#ffd93d">base × 0.045</span> · 판정 피드백 <span class="mono" style="color:#ffd93d">base × 0.06 / 800</span> ·
+    포즈 안내 <span class="mono" style="color:#ffd93d">base × 0.065 / 800</span> ·
+    엔드카드 로고 <span class="mono" style="color:#ffd93d">base × 0.09 / 900</span> · 엔드카드 랭크 <span class="mono" style="color:#ffd93d">base × 0.2 / 900</span>
+  </div>
+  <div class="footmark">CATCHRHY · DESIGN TEMPLATE v1.0</div>
+  <div class="pagenum">03 / 07</div>
+</div>
+
+<!-- ═══════════════════════ 4. 컴포넌트 ═══════════════════════ -->
+<div class="page">
+  <div class="eyebrow">CatchRhy Design System · 03</div>
+  <div class="ptitle">Components</div>
+  <div class="pdesc">모든 인터랙티브 요소는 pill(999px). 컨테이너는 16px, 입력은 10px 라운드. 상태는 배경 알파와 opacity로만 구분한다.</div>
+
+  <div class="compgrid">
+    <div class="comp">
+      <h4>Buttons</h4>
+      <div class="body">
+        <span class="btn" style="font-size:15px; padding:13px 34px;">PLAY</span>
+        <span class="btn secondary">공유하기</span>
+        <span class="btn small">게임 시작</span>
+        <span class="btn secondary small">다시하기</span>
+        <span class="btn disabled" style="font-size:15px; padding:13px 34px;">비활성</span>
+      </div>
+      <div class="note">Primary: Pink / 16·42px 패딩 / 17·800 — 화면당 1개 원칙.<br/>Secondary: #FFF 16% / 12·28 / 14px. Small: 10·20 / 13px. Disabled: opacity .4</div>
+    </div>
+    <div class="comp">
+      <h4>Badge &amp; Tabs</h4>
+      <div class="body">
+        <span class="badge">NEW RECORD!</span>
+        <span class="badge" style="background:#ff5c9e; color:#fff;">로그인</span>
+        <div class="tabs"><span class="active">하이라이트 15초</span><span>전체 영상</span></div>
+      </div>
+      <div class="note">배지: pill / Pink 22% 배경 + Pink Soft 텍스트. 강조형은 Pink 원색.<br/>탭: 검정 45% pill 컨테이너 + 활성 세그먼트만 Pink.</div>
+    </div>
+    <div class="comp">
+      <h4>Toast &amp; HUD Button</h4>
+      <div class="body">
+        <span class="toast">🎬 하이라이트 클립이 준비됐어요</span>
+        <span class="hud-btn">⏸</span>
+      </div>
+      <div class="note">토스트: 하단 90px, 검정 80% pill.<br/>HUD 버튼: 44×44 원형, 검정 55% + blur 6px — 카메라 화면 위 전용.</div>
+    </div>
+
+    <div class="comp">
+      <h4>Card (곡 선택)</h4>
+      <div class="card" style="padding:13px;">
+        <div class="row">
+          <div style="text-align:left;">
+            <div style="font-weight:800; font-size:15px;">Neon Beat</div>
+            <div class="dim" style="font-size:10.5px;">CatchRhy · 128 BPM · 60초</div>
+            <div class="dim" style="font-size:10.5px;">내 최고 기록: SS · 128,400점</div>
+          </div>
+          <span class="btn secondary small" style="font-size:11px; padding:8px 14px;">▶ 미리듣기</span>
+        </div>
+        <div class="row" style="margin-top:10px;">
+          <span style="display:flex; gap:6px;">
+            <span class="btn small" style="font-size:11px; padding:8px 14px;">Easy</span>
+            <span class="btn small" style="font-size:11px; padding:8px 14px; background:rgba(255,255,255,0.14);">Normal</span>
+          </span>
+          <span class="btn small" style="font-size:11px; padding:8px 14px;">게임 시작</span>
+        </div>
+      </div>
+      <div class="note">#FFF 7% + 1px #FFF 10% 테두리, 16px 라운드, 16px 패딩. 난이도 칩은 선택 시 Pink, 미선택 #FFF 14%.</div>
+    </div>
+    <div class="comp">
+      <h4>Form — Input · Select · Range</h4>
+      <div class="body" style="flex-direction:column; align-items:stretch;">
+        <span class="inputx ph">이메일 주소</span>
+        <div class="row">
+          <span class="selectx">720p (기본)</span>
+          <div style="flex:1; padding:0 6px;"><div class="range"><div class="fill"></div><div class="knob"></div></div></div>
+        </div>
+      </div>
+      <div class="note">입력: 검정 30% + #FFF 15% 테두리, 10px 라운드, 12px 패딩.<br/>레인지: accent-color Pink. 설정 화면은 카드 안에 배지(값 표시)와 함께 쓴다.</div>
+    </div>
+    <div class="comp">
+      <h4>Modal</h4>
+      <div style="background:rgba(10,5,20,0.75); border-radius:12px; padding:10px; display:flex; justify-content:center;">
+        <div class="card" style="width:200px; padding:11px;">
+          <div style="font-weight:700; font-size:12px; margin-bottom:8px;">닉네임 수정</div>
+          <span class="inputx" style="font-size:12px; padding:9px; display:block;">hhp227</span>
+          <div style="display:flex; gap:6px; margin-top:9px; justify-content:center;">
+            <span class="btn small" style="font-size:11px; padding:8px 14px;">저장</span>
+            <span class="btn secondary small" style="font-size:11px; padding:8px 14px;">취소</span>
+          </div>
+        </div>
+      </div>
+      <div class="note">스크림 rgba(10,5,20,.6) + blur 3px, 중앙 정렬. 콘텐츠는 Card 재사용(폭 280px).</div>
+    </div>
+
+    <div class="comp" style="grid-column: span 2;">
+      <h4>Game Notes — 버블 &amp; 판정 피드백</h4>
+      <div class="body" style="gap:14px; padding: 5px 2px 1px 12px;">
+        <span class="ringwrap"><span class="ring" style="width:60px; height:60px;"></span><span class="bubble catch" style="width:44px; height:44px; font-size:10px;">두근</span></span>
+        <span class="bubble decoy" style="width:40px; height:40px; font-size:10px; margin-left:6px;">설렘</span>
+        <span class="judge" style="color:#ffd93d; font-size:16px;">PERFECT!</span>
+        <span class="judge" style="color:#6bffb0; font-size:16px;">GREAT!</span>
+        <span class="judge" style="color:#7ec8ff; font-size:16px;">GOOD</span>
+        <span class="judge" style="color:#aaaaaa; font-size:16px;">MISS</span>
+        <span class="judge" style="color:#ff6b81; font-size:16px;">X!</span>
+      </div>
+      <div class="note">r = 0.075 × min(w,h) · 히트 반경 1.2r · 어프로치 링 1.5r→1.0r / 2,000ms · 판정 텍스트 800ms ↑30px 페이드아웃.</div>
+    </div>
+    <div class="comp">
+      <h4>HUD Panels</h4>
+      <div class="body" style="gap:6px;">
+        <span class="hudpanel" style="padding:6px 12px;"><span class="lb">SCORE</span><br/><span class="vl" style="color:#ff9cc0; font-size:16px;">12,400 <span style="color:#ffd93d; font-size:11px;">x 3</span></span></span>
+        <span class="hudpanel" style="padding:6px 12px;"><span class="lb">TARGET</span><br/><span style="font-size:11px; font-weight:800;">두근 단어 · 8/15</span></span>
+        <span class="hudpanel" style="border-radius:14px; padding:6px 12px;"><span class="lb">MISSION</span><br/><span style="font-size:10.5px;">'두근' 단어만 잡아라!</span></span>
+      </div>
+      <div class="note">검정 45~55% 패널 · 라벨 Pink Soft + 값 흰/골드.</div>
+    </div>
+  </div>
+  <div class="footmark">CATCHRHY · DESIGN TEMPLATE v1.0</div>
+  <div class="pagenum">04 / 07</div>
+</div>
+
+<!-- ═══════════════════════ 5. 화면 — 진입 플로우 ═══════════════════════ -->
+<div class="page">
+  <div class="eyebrow">CatchRhy Design System · 04</div>
+  <div class="ptitle">Screens — 진입 플로우</div>
+  <div class="pdesc">모든 화면은 세로 중앙 정렬 스택(gap 14px), 패딩 24px, max-width 480px. 목표: "3초 안에 PLAY를 누르게 한다".</div>
+
+  <div class="phones">
+    <!-- Login -->
+    <div class="phwrap">
+      <div class="phlabel">Login<small>/login · 최소 마찰 인증 · 게스트 폴백</small></div>
+      <div class="frame s66"><div class="vp center">
+        <div class="logo">Catch<em>Rhy</em></div>
+        <div class="tagline">카메라 앞에서 손으로 버블을 잡는 리듬게임</div>
+        <span class="btn" style="min-width:240px; margin-top:8px;">Google로 계속하기</span>
+        <div style="display:flex; flex-direction:column; gap:8px; width:240px;">
+          <span class="inputx ph">이메일 주소</span>
+          <span class="btn secondary">이메일로 계속하기</span>
+        </div>
+        <span class="btn secondary small">게스트로 계속하기 (기록은 이 기기에만 저장)</span>
+        <div class="dim">카메라 영상은 기기에서만 처리되며<br/>서버로 전송되지 않습니다.<br/>계정에는 플레이 점수·랭크 기록만 저장됩니다.</div>
+      </div></div>
+    </div>
+    <!-- Home -->
+    <div class="phwrap">
+      <div class="phlabel">Home<small>/home · 플레이 진입 허브</small></div>
+      <div class="frame s66"><div class="vp center">
+        <div class="row" style="position:absolute; top:20px; left:0; padding:0 20px;">
+          <span style="display:flex; gap:8px; align-items:center;">
+            <span class="badge">hhp227 ✏️</span>
+            <span class="badge" style="background:#ff5c9e; color:#fff;">로그인</span>
+          </span>
+          <span style="font-size:22px;">⚙️</span>
+        </div>
+        <div class="logo">Catch<em>Rhy</em></div>
+        <div class="tagline">카메라 앞에서 손으로 버블을 잡는 리듬게임</div>
+        <span class="btn" style="font-size:22px; padding:20px 64px; margin-top:6px;">PLAY</span>
+        <div class="dim">전면 카메라를 사용합니다 · 영상은 기기에서만 처리되고<br/>업로드는 내가 선택할 때만 이루어집니다</div>
+      </div></div>
+    </div>
+    <!-- Select -->
+    <div class="phwrap">
+      <div class="phlabel">Song Select<small>/select · 곡·난이도 선택 + 미리듣기</small></div>
+      <div class="frame s66"><div class="vp top">
+        <div class="row"><span style="font-size:20px;">←</span><strong>곡 선택</strong><span style="width:20px;"></span></div>
+        <div class="card">
+          <div class="row">
+            <div>
+              <div style="font-weight:800; font-size:17px;">Neon Beat</div>
+              <div class="dim">CatchRhy · 128 BPM · 60초</div>
+              <div class="dim">내 최고 기록: SS · 128,400점</div>
+            </div>
+            <span class="btn secondary small">▶ 미리듣기</span>
+          </div>
+          <div class="row" style="margin-top:14px;">
+            <span style="display:flex; gap:8px;">
+              <span class="btn small">Easy</span>
+              <span class="btn small" style="background:rgba(255,255,255,0.14);">Normal</span>
+            </span>
+            <span class="btn small">게임 시작</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="row">
+            <div>
+              <div style="font-weight:800; font-size:17px;">Bubble Pop</div>
+              <div class="dim">CatchRhy · 140 BPM · 55초</div>
+              <div class="dim">내 최고 기록: 없음</div>
+            </div>
+            <span class="btn secondary small">▶ 미리듣기</span>
+          </div>
+          <div class="row" style="margin-top:14px;">
+            <span style="display:flex; gap:8px;">
+              <span class="btn small" style="background:rgba(255,255,255,0.14);">Easy</span>
+              <span class="btn small">Normal</span>
+            </span>
+            <span class="btn small">게임 시작</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="row">
+            <div>
+              <div style="font-weight:800; font-size:17px;">Starlight Run</div>
+              <div class="dim">CatchRhy · 118 BPM · 62초</div>
+              <div class="dim">내 최고 기록: A · 96,200점</div>
+            </div>
+            <span class="btn secondary small">■ 정지</span>
+          </div>
+          <div class="row" style="margin-top:14px;">
+            <span style="display:flex; gap:8px;">
+              <span class="btn small" style="background:rgba(255,255,255,0.14);">Easy</span>
+              <span class="btn small">Normal</span>
+            </span>
+            <span class="btn small">게임 시작</span>
+          </div>
+        </div>
+        <div class="dim">게임 시작 시 카메라 권한을 요청합니다</div>
+      </div></div>
+    </div>
+    <!-- Settings -->
+    <div class="phwrap">
+      <div class="phlabel">Settings<small>/settings · 카드 스택 패턴</small></div>
+      <div class="frame s66"><div class="vp top">
+        <div class="row"><span style="font-size:20px;">←</span><strong>설정</strong><span style="width:20px;"></span></div>
+        <div class="card">
+          <div style="font-weight:700; margin-bottom:8px;">닉네임</div>
+          <span class="inputx" style="display:block;">hhp227</span>
+          <div class="dim" style="margin-top:6px;">2~12자 · 입력 후 바깥을 탭하면 저장</div>
+        </div>
+        <div class="card">
+          <div style="font-weight:700; margin-bottom:8px;">계정</div>
+          <div class="dim">hhp0227@gmail.com</div>
+          <span class="btn secondary small" style="margin-top:8px;">로그아웃</span>
+        </div>
+        <div class="card">
+          <div class="row"><div style="font-weight:700;">판정 오프셋</div><span class="badge">+15ms</span></div>
+          <div style="padding:12px 2px 6px;"><div class="range"><div class="fill" style="width:54%"></div><div class="knob" style="left:54%"></div></div></div>
+          <div class="dim">판정이 계속 늦게/빠르게 나오면 조정하세요.</div>
+          <span class="btn secondary small" style="margin-top:8px;">다음 플레이에서 다시 보정하기</span>
+        </div>
+        <div class="card">
+          <div class="row"><div style="font-weight:700;">음악 볼륨</div><span class="badge">80</span></div>
+          <div style="padding:12px 2px 2px;"><div class="range"><div class="fill" style="width:80%"></div><div class="knob" style="left:80%"></div></div></div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+  <div class="footmark">CATCHRHY · DESIGN TEMPLATE v1.0</div>
+  <div class="pagenum">05 / 07</div>
+</div>
+
+<!-- ═══════════════════════ 6. 화면 — 플레이 루프 ═══════════════════════ -->
+<div class="page">
+  <div class="eyebrow">CatchRhy Design System · 05</div>
+  <div class="ptitle">Screens — 플레이 루프</div>
+  <div class="pdesc">플레이 화면 배경은 전면 카메라 영상(기기 내 처리). HUD는 검정 알파 패널, 오버레이는 rgba(20,10,35,.72)+blur로 카메라 위에 얹는다.</div>
+
+  <div class="phones">
+    <!-- Play HUD -->
+    <div class="phwrap">
+      <div class="phlabel">Play — In-Game HUD<small>/play · Canvas 2D · 카메라 미러링 배경</small></div>
+      <div class="frame s58"><div class="vp playbg" style="display:block; text-align:left;">
+        <!-- timer -->
+        <span class="hudpanel" style="position:absolute; left:10px; top:10px; padding:6px 12px;"><span style="font-weight:700; font-size:14px;">00:42</span></span>
+        <!-- score -->
+        <span class="hudpanel" style="position:absolute; left:50%; transform:translateX(-50%); top:10px; padding:6px 20px;">
+          <span class="lb">SCORE</span><br/><span class="vl" style="color:#ff9cc0;">12,400 <span style="color:#ffd93d; font-size:12px; font-weight:700;">x 3</span></span>
+        </span>
+        <!-- pause -->
+        <span class="hud-btn" style="position:absolute; right:10px; top:10px;">⏸</span>
+        <!-- combo -->
+        <div style="position:absolute; left:14px; top:135px;">
+          <div style="color:#ff9cc0; font-weight:700; font-size:11px;">COMBO</div>
+          <div style="font-weight:800; font-size:26px;">27</div>
+        </div>
+        <!-- target -->
+        <span class="hudpanel" style="position:absolute; right:10px; top:118px; padding:7px 14px;">
+          <span class="lb">TARGET</span><br/><span style="font-size:10.5px; font-weight:700;">두근 단어</span><br/><span style="font-size:16px; font-weight:800;">8 / 15</span>
+        </span>
+        <!-- bubbles: y 0.45~0.73 -->
+        <span class="ringwrap" style="position:absolute; left:64px; top:420px;"><span class="ring" style="width:96px; height:96px;"></span><span class="bubble catch" style="width:64px; height:64px; font-size:13px;">두근</span></span>
+        <span class="bubble decoy" style="position:absolute; right:60px; top:490px; width:64px; height:64px; font-size:13px;">설렘</span>
+        <div class="judge" style="position:absolute; left:150px; top:365px; color:#ffd93d; font-size:22px;">PERFECT!</div>
+        <!-- mission -->
+        <span class="hudpanel" style="position:absolute; left:31px; right:31px; bottom:76px; border-radius:14px; padding:8px 12px;">
+          <span class="lb">MISSION</span><br/><span style="font-size:11px;">'두근' 단어만 잡아라!</span>
+        </span>
+      </div></div>
+    </div>
+    <!-- Pause -->
+    <div class="phwrap">
+      <div class="phlabel">Pause Overlay<small>overlay rgba(20,10,35,.72) + blur 4</small></div>
+      <div class="frame s58"><div class="vp playbg" style="display:block;">
+        <div style="position:absolute; inset:0; background:rgba(20,10,35,0.8); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:24px;">
+          <div style="font-size:24px; font-weight:800;">일시정지</div>
+          <span class="btn">계속하기</span>
+          <span class="btn secondary">다시 시작</span>
+          <span class="btn secondary">나가기</span>
+        </div>
+      </div></div>
+    </div>
+    <!-- Result -->
+    <div class="phwrap">
+      <div class="phlabel">Result<small>랭크·기록·공유 — 바이럴 루프의 시작점</small></div>
+      <div class="frame s58"><div class="vp center" style="gap:8px; background:rgba(20,10,35,0.97);">
+        <div style="font-size:84px; font-weight:900; color:#ffd93d; line-height:1.1; text-shadow:0 4px 30px rgba(255,217,61,0.5);">SS</div>
+        <div style="color:#6bffb0; font-weight:800;">★ FULL COMBO ★</div>
+        <span class="badge">NEW RECORD!</span>
+        <div style="font-size:30px; font-weight:800; color:#ff9cc0;">128,400</div>
+        <table style="border-collapse:collapse; font-size:13px; color:#e8ddf5;">
+          <tr><td style="padding:2px 12px;">Accuracy</td><td style="padding:2px 12px; text-align:right; font-weight:700; color:#fff;">94.2%</td></tr>
+          <tr><td style="padding:2px 12px;">PERFECT / GREAT / GOOD</td><td style="padding:2px 12px; text-align:right; font-weight:700; color:#fff;">18 / 6 / 2</td></tr>
+          <tr><td style="padding:2px 12px;">MISS / 함정 접촉</td><td style="padding:2px 12px; text-align:right; font-weight:700; color:#fff;">0 / 0</td></tr>
+          <tr><td style="padding:2px 12px;">MAX COMBO</td><td style="padding:2px 12px; text-align:right; font-weight:700; color:#fff;">26</td></tr>
+        </table>
+        <div class="tabs"><span class="active">하이라이트 15초</span><span>전체 영상</span></div>
+        <div style="width:240px; height:150px; border-radius:12px; border:1px solid rgba(255,255,255,0.2); background:#000; display:flex; align-items:center; justify-content:center; color:#cbb8e8; font-size:11px;">▶ 플레이 영상</div>
+        <div style="display:flex; gap:10px;">
+          <span class="btn" style="font-size:14px; padding:12px 28px;">공유하기</span>
+          <span class="btn secondary">영상 저장</span>
+        </div>
+        <div class="row" style="justify-content:center; gap:8px;">
+          <span class="dim">손 인식이 잘 됐나요?</span>
+          <span class="btn secondary small">👍</span>
+          <span class="btn secondary small">👎</span>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <span class="btn secondary small">다시하기</span>
+          <span class="btn secondary small">다른 곡</span>
+        </div>
+      </div></div>
+    </div>
+    <!-- Endcard -->
+    <div class="phwrap">
+      <div class="phlabel">Video End Card<small>공유 영상 말미 1.5초 워터마크 (FR-16)</small></div>
+      <div class="frame s58"><div class="vp" style="background:#140a23; display:block;">
+        <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <div style="position:absolute; top:22%; text-align:center; width:100%;">
+            <span style="font-size:35px; font-weight:900;">Catch<span style="color:#ff5c9e;">Rhy</span></span>
+            <div style="color:#cbb8e0; font-size:12.5px; font-weight:600; margin-top:4px;">Catch the Rhythm!</div>
+          </div>
+          <div style="font-size:78px; font-weight:900; color:#ffd93d; text-shadow:0 0 24px rgba(255,217,61,0.55);">SS</div>
+          <div style="position:absolute; top:63%; text-align:center; width:100%;">
+            <div style="color:#ff9cc0; font-size:27px; font-weight:800;">128,400</div>
+            <div style="color:#cbb8e0; font-size:11px; font-weight:600; letter-spacing:2px; margin-top:6px;">SCORE</div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+  <div class="footmark">CATCHRHY · DESIGN TEMPLATE v1.0</div>
+  <div class="pagenum">06 / 07</div>
+</div>
+
+<!-- ═══════════════════════ 7. 레이아웃 & 게임 룰 ═══════════════════════ -->
+<div class="page">
+  <div class="eyebrow">CatchRhy Design System · 06</div>
+  <div class="ptitle">Layout &amp; Game Rules</div>
+  <div class="pdesc">디자인이 지켜야 하는 확정 제품 규칙(변경 금지)과 수치 토큰. 플레이필드 배치는 카메라 속 사람과 겹치지 않는 것이 최우선이다.</div>
+
+  <div class="rulegrid">
+    <!-- 플레이필드 다이어그램 -->
+    <div>
+      <div class="sechead" style="margin-top:0;">Playfield — 노트 배치 영역</div>
+      <div style="position:relative; width:236px; height:512px; margin:0 auto; border-radius:20px; border:1.5px solid rgba(255,255,255,0.25); background:linear-gradient(180deg,#241a33,#0d0913); overflow:hidden;">
+        <div style="position:absolute; left:0; right:0; top:0; height:45%; background:rgba(255,255,255,0.03); border-bottom:1.5px dashed rgba(255,156,192,0.7);"></div>
+        <div style="position:absolute; left:0; right:0; bottom:0; height:27%; background:rgba(255,255,255,0.03); border-top:1.5px dashed rgba(255,156,192,0.7);"></div>
+        <div style="position:absolute; right:6px; top:43%; font-size:9px; color:#ff9cc0;" class="mono">y = 0.45</div>
+        <div style="position:absolute; right:6px; top:70.5%; font-size:9px; color:#ff9cc0;" class="mono">y = 0.73</div>
+        <div style="position:absolute; left:0; right:0; top:16%; text-align:center; font-size:9.5px; color:#cbb8e8;">HUD 영역 (SCORE·COMBO·TARGET)</div>
+        <div style="position:absolute; left:0; right:0; bottom:10%; text-align:center; font-size:9.5px; color:#cbb8e8;">MISSION 배너 영역</div>
+        <div style="position:absolute; left:0; right:0; top:54%; text-align:center; font-size:9.5px; font-weight:700; color:#fff;">노트 스폰 밴드<br/><span style="color:#cbb8e8; font-weight:400;">(어깨~골반 높이 · 손이 닿는 곳)</span></div>
+        <span class="ringwrap" style="position:absolute; left:26px; top:47%;"><span class="ring" style="width:66px; height:66px;"></span><span class="bubble catch" style="width:44px; height:44px; font-size:10px;">두근</span></span>
+        <span class="bubble decoy" style="position:absolute; right:30px; top:58%; width:44px; height:44px; font-size:10px;">설렘</span>
+      </div>
+    </div>
+
+    <!-- 수치 토큰 -->
+    <div>
+      <div class="sechead" style="margin-top:0;">Spacing &amp; Radius</div>
+      <table class="rtable">
+        <tr><th>토큰</th><th>값</th></tr>
+        <tr><td>화면 패딩 / 스택 gap</td><td class="v">24px / 14px</td></tr>
+        <tr><td>콘텐츠 max-width</td><td class="v">480px</td></tr>
+        <tr><td>pill (버튼·배지·탭·토스트)</td><td class="v">999px</td></tr>
+        <tr><td>카드 라운드</td><td class="v">16px</td></tr>
+        <tr><td>배너·미션 라운드</td><td class="v">14px</td></tr>
+        <tr><td>입력·HUD·영상 라운드</td><td class="v">10–12px</td></tr>
+        <tr><td>버튼 패딩 L / M / S</td><td class="v">16·42 / 12·28 / 10·20</td></tr>
+        <tr><td>HUD 버튼</td><td class="v">44 × 44px</td></tr>
+        <tr><td>safe-area</td><td class="v">env(safe-area-inset-top)</td></tr>
+      </table>
+      <div class="sechead">Note Geometry</div>
+      <table class="rtable">
+        <tr><td>버블 반지름 r</td><td class="v">0.075 × min(w,h)</td></tr>
+        <tr><td>히트 반경</td><td class="v">1.2 × r</td></tr>
+        <tr><td>어프로치 링</td><td class="v">1.5r → 1.0r / 2,000ms</td></tr>
+        <tr><td>노트 간격</td><td class="v">≥ 1.5s (BPM 무관)</td></tr>
+        <tr><td>함정 잔류</td><td class="v">판정 후 500ms</td></tr>
+        <tr><td>피드백 수명</td><td class="v">800ms (↑30px 페이드)</td></tr>
+      </table>
+    </div>
+
+    <!-- 판정/점수 -->
+    <div>
+      <div class="sechead" style="margin-top:0;">Judgement &amp; Score</div>
+      <table class="rtable">
+        <tr><th>판정</th><th>윈도우</th><th>점수</th></tr>
+        <tr><td style="color:#ffd93d;">PERFECT</td><td class="v">± 80ms</td><td class="v">1,000</td></tr>
+        <tr><td style="color:#6bffb0;">GREAT</td><td class="v">± 160ms</td><td class="v">700</td></tr>
+        <tr><td style="color:#7ec8ff;">GOOD</td><td class="v">± 250ms</td><td class="v">300</td></tr>
+        <tr><td style="color:#aaaaaa;">MISS</td><td class="v">초과</td><td class="v">0 · 콤보 리셋</td></tr>
+        <tr><td style="color:#ff6b81;">DECOY</td><td class="v">접촉 시</td><td class="v">−100 · 콤보 리셋</td></tr>
+      </table>
+      <table class="rtable" style="margin-top:10px;">
+        <tr><th>보너스</th><th>값</th></tr>
+        <tr><td>콤보 배율</td><td class="v">×1 (0) · ×2 (10) · ×3 (25) · ×4 (50)</td></tr>
+        <tr><td>클리어 / 풀콤보</td><td class="v">+5,000 / +10,000</td></tr>
+      </table>
+      <table class="rtable" style="margin-top:10px;">
+        <tr><th>랭크</th><th>Accuracy</th></tr>
+        <tr><td style="color:#ffd93d;">SSS / SS / S</td><td class="v">≥97 / ≥92 / ≥85</td></tr>
+        <tr><td>A / B / C / F</td><td class="v">≥75 / ≥60 / ≥40 / &lt;40</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="sechead">User Flow</div>
+  <div class="flow">
+    <span class="st">Login (게스트 가능)</span><span class="ar">→</span>
+    <span class="st hot">Home · PLAY</span><span class="ar">→</span>
+    <span class="st">곡 선택</span><span class="ar">→</span>
+    <span class="st">권한 → 보정 → 3·2·1</span><span class="ar">→</span>
+    <span class="st hot">플레이 (자동 녹화)</span><span class="ar">→</span>
+    <span class="st">결과 · 하이라이트</span><span class="ar">→</span>
+    <span class="st">공유 / 저장 (엔드카드)</span><span class="ar">↺</span>
+    <span class="st">재도전</span>
+  </div>
+  <div class="dim" style="margin-top:8px; font-size:10px;">
+    프라이버시 원칙: 카메라 영상은 기기에서만 처리 · 서버 전송 금지 · 업로드는 유저가 선택할 때만 — 관련 안내 문구는 dim 스타일로 각 진입 화면에 상시 노출한다.
+  </div>
+  <div class="footmark">CATCHRHY · DESIGN TEMPLATE v1.0</div>
+  <div class="pagenum">07 / 07</div>
+</div>
+
+</body>
+</html>
