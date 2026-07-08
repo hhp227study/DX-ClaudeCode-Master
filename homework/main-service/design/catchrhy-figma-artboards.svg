@@ -1,0 +1,231 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2300" height="920" viewBox="0 0 2300 920" font-family="Noto Sans KR, Apple SD Gothic Neo, Malgun Gothic, sans-serif">
+  <!-- CatchRhy Design Template — Figma 임포트용 아트보드 (SVG는 Figma에서 편집 가능한 벡터/텍스트 레이어로 임포트됩니다) -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.342" y2="0.94">
+      <stop offset="0" stop-color="#1a1028"/>
+      <stop offset="1" stop-color="#2b1440"/>
+    </linearGradient>
+    <linearGradient id="playbg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#241a33"/>
+      <stop offset="0.55" stop-color="#17101f"/>
+      <stop offset="1" stop-color="#0d0913"/>
+    </linearGradient>
+    <radialGradient id="catch" cx="0.35" cy="0.35" r="0.75">
+      <stop offset="0" stop-color="#ffd3e6"/>
+      <stop offset="1" stop-color="#ff5c9e"/>
+    </radialGradient>
+    <radialGradient id="decoy" cx="0.35" cy="0.35" r="0.75">
+      <stop offset="0" stop-color="#e2d6ff"/>
+      <stop offset="1" stop-color="#8f6bdf"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ═══════════ ARTBOARD 0 · Design Tokens (500×844) ═══════════ -->
+  <g id="tokens">
+    <text x="0" y="24" font-size="15" font-weight="800" fill="#111">Design Tokens</text>
+    <rect x="0" y="40" width="500" height="844" rx="0" fill="url(#bg)"/>
+    <g transform="translate(28,40)">
+      <text x="0" y="52" font-size="26" font-weight="900" fill="#ffffff" letter-spacing="1">Catch<tspan fill="#ff5c9e">Rhy</tspan> <tspan font-size="13" font-weight="600" fill="#cbb8e8">Design Tokens v1.0</tspan></text>
+
+      <text x="0" y="96" font-size="11" font-weight="800" fill="#ff9cc0" letter-spacing="2">BRAND</text>
+      <g transform="translate(0,108)">
+        <rect width="48" height="48" rx="10" fill="#ff5c9e"/><text y="66" font-size="9" fill="#ffffff">#FF5C9E</text><text y="78" font-size="8" fill="#cbb8e8">Primary</text>
+        <g transform="translate(58,0)"><rect width="48" height="48" rx="10" fill="#ff9cc0"/><text y="66" font-size="9" fill="#ffffff">#FF9CC0</text><text y="78" font-size="8" fill="#cbb8e8">Pink Soft</text></g>
+        <g transform="translate(116,0)"><rect width="48" height="48" rx="10" fill="#8f6bdf"/><text y="66" font-size="9" fill="#ffffff">#8F6BDF</text><text y="78" font-size="8" fill="#cbb8e8">Purple</text></g>
+        <g transform="translate(174,0)"><rect width="48" height="48" rx="10" fill="#ffd93d"/><text y="66" font-size="9" fill="#ffffff">#FFD93D</text><text y="78" font-size="8" fill="#cbb8e8">Gold</text></g>
+        <g transform="translate(232,0)"><rect width="48" height="48" rx="10" fill="#1a1028" stroke="#ffffff" stroke-opacity="0.2"/><text y="66" font-size="9" fill="#ffffff">#1A1028</text><text y="78" font-size="8" fill="#cbb8e8">BG 1</text></g>
+        <g transform="translate(290,0)"><rect width="48" height="48" rx="10" fill="#2b1440" stroke="#ffffff" stroke-opacity="0.2"/><text y="66" font-size="9" fill="#ffffff">#2B1440</text><text y="78" font-size="8" fill="#cbb8e8">BG 2</text></g>
+        <g transform="translate(348,0)"><rect width="48" height="48" rx="10" fill="#cbb8e8"/><text y="66" font-size="9" fill="#ffffff">#CBB8E8</text><text y="78" font-size="8" fill="#cbb8e8">Text Dim</text></g>
+        <g transform="translate(406,0)"><rect width="48" height="48" rx="10" fill="#ffffff"/><text y="66" font-size="9" fill="#ffffff">#FFFFFF</text><text y="78" font-size="8" fill="#cbb8e8">Text</text></g>
+      </g>
+
+      <text x="0" y="238" font-size="11" font-weight="800" fill="#ff9cc0" letter-spacing="2">JUDGEMENT</text>
+      <g transform="translate(0,250)">
+        <rect width="48" height="48" rx="10" fill="#ffd93d"/><text y="66" font-size="9" fill="#ffffff">#FFD93D</text><text y="78" font-size="8" fill="#cbb8e8">PERFECT</text>
+        <g transform="translate(58,0)"><rect width="48" height="48" rx="10" fill="#6bffb0"/><text y="66" font-size="9" fill="#ffffff">#6BFFB0</text><text y="78" font-size="8" fill="#cbb8e8">GREAT</text></g>
+        <g transform="translate(116,0)"><rect width="48" height="48" rx="10" fill="#7ec8ff"/><text y="66" font-size="9" fill="#ffffff">#7EC8FF</text><text y="78" font-size="8" fill="#cbb8e8">GOOD</text></g>
+        <g transform="translate(174,0)"><rect width="48" height="48" rx="10" fill="#aaaaaa"/><text y="66" font-size="9" fill="#ffffff">#AAAAAA</text><text y="78" font-size="8" fill="#cbb8e8">MISS</text></g>
+        <g transform="translate(232,0)"><rect width="48" height="48" rx="10" fill="#ff6b81"/><text y="66" font-size="9" fill="#ffffff">#FF6B81</text><text y="78" font-size="8" fill="#cbb8e8">DECOY</text></g>
+        <g transform="translate(290,0)"><circle cx="24" cy="24" r="24" fill="url(#catch)"/><text y="66" font-size="8" fill="#cbb8e8">Catch Bubble</text></g>
+        <g transform="translate(360,0)"><circle cx="24" cy="24" r="24" fill="url(#decoy)"/><text y="66" font-size="8" fill="#cbb8e8">Decoy Bubble</text></g>
+      </g>
+
+      <text x="0" y="382" font-size="11" font-weight="800" fill="#ff9cc0" letter-spacing="2">TYPOGRAPHY</text>
+      <text x="0" y="424" font-size="34" font-weight="900" fill="#ffffff" letter-spacing="1">Catch<tspan fill="#ff5c9e">Rhy</tspan> <tspan font-size="11" font-weight="400" fill="#cbb8e8">Logo 34 / 900</tspan></text>
+      <text x="0" y="490" font-size="52" font-weight="900" fill="#ffd93d">SSS <tspan font-size="11" font-weight="400" fill="#cbb8e8">Rank 84 / 900 · Gold + Glow</tspan></text>
+      <text x="0" y="530" font-size="30" font-weight="800" fill="#ff9cc0">128,400 <tspan font-size="11" font-weight="400" fill="#cbb8e8">Score 30 / 800</tspan></text>
+      <text x="0" y="562" font-size="17" font-weight="800" fill="#ffffff">곡 제목 · 버튼 레이블 <tspan font-size="11" font-weight="400" fill="#cbb8e8">Title/Button 17 / 800</tspan></text>
+      <text x="0" y="588" font-size="14" fill="#cbb8e8">태그라인 14 · 딤 텍스트 12 / lh 1.7</text>
+      <text x="0" y="612" font-size="12" fill="#cbb8e8">폰트: -apple-system, Apple SD Gothic Neo, Noto Sans KR</text>
+
+      <text x="0" y="656" font-size="11" font-weight="800" fill="#ff9cc0" letter-spacing="2">SURFACES &amp; RADIUS</text>
+      <g transform="translate(0,672)">
+        <rect width="130" height="64" rx="16" fill="#ffffff" fill-opacity="0.07" stroke="#ffffff" stroke-opacity="0.1"/>
+        <text x="10" y="26" font-size="10" font-weight="700" fill="#ffffff">Card r16</text><text x="10" y="42" font-size="8.5" fill="#cbb8e8">#FFF 7% / b10%</text>
+        <g transform="translate(142,0)"><rect width="130" height="64" rx="12" fill="#000000" fill-opacity="0.5"/><text x="10" y="26" font-size="10" font-weight="700" fill="#ffffff">HUD r12</text><text x="10" y="42" font-size="8.5" fill="#cbb8e8">#000 45–55%</text></g>
+        <g transform="translate(284,0)"><rect width="130" height="64" rx="10" fill="#000000" fill-opacity="0.3" stroke="#ffffff" stroke-opacity="0.15"/><text x="10" y="26" font-size="10" font-weight="700" fill="#ffffff">Input r10</text><text x="10" y="42" font-size="8.5" fill="#cbb8e8">#000 30% / b15%</text></g>
+      </g>
+      <g transform="translate(0,756)">
+        <rect width="150" height="40" rx="20" fill="#ff5c9e"/><text x="75" y="25" font-size="14" font-weight="800" fill="#ffffff" text-anchor="middle">Primary pill</text>
+        <g transform="translate(162,0)"><rect width="150" height="40" rx="20" fill="#ffffff" fill-opacity="0.16"/><text x="75" y="25" font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle">Secondary pill</text></g>
+        <g transform="translate(324,0)"><rect width="102" height="24" rx="12" fill="#ff5c9e" fill-opacity="0.22"/><text x="51" y="16" font-size="11" font-weight="700" fill="#ff9cc0" text-anchor="middle">Badge pill</text></g>
+      </g>
+    </g>
+  </g>
+
+  <!-- ═══════════ ARTBOARD 1 · Home (390×844) ═══════════ -->
+  <g id="home" transform="translate(560,0)">
+    <text x="0" y="24" font-size="15" font-weight="800" fill="#111">Home — /home</text>
+    <g transform="translate(0,40)">
+      <rect width="390" height="844" fill="url(#bg)"/>
+      <rect x="20" y="20" width="86" height="24" rx="12" fill="#ff5c9e" fill-opacity="0.22"/>
+      <text x="63" y="36" font-size="11" font-weight="700" fill="#ff9cc0" text-anchor="middle">hhp227 ✏️</text>
+      <rect x="114" y="20" width="56" height="24" rx="12" fill="#ff5c9e"/>
+      <text x="142" y="36" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">로그인</text>
+      <text x="370" y="38" font-size="20" text-anchor="end" fill="#ffffff">⚙️</text>
+      <text x="195" y="368" font-size="34" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="1">Catch<tspan fill="#ff5c9e">Rhy</tspan></text>
+      <text x="195" y="400" font-size="14" fill="#cbb8e8" text-anchor="middle">카메라 앞에서 손으로 버블을 잡는 리듬게임</text>
+      <rect x="98" y="428" width="194" height="66" rx="33" fill="#ff5c9e"/>
+      <text x="195" y="470" font-size="22" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="1">PLAY</text>
+      <text x="195" y="530" font-size="12" fill="#cbb8e8" text-anchor="middle">전면 카메라를 사용합니다 · 영상은 기기에서만 처리되고</text>
+      <text x="195" y="550" font-size="12" fill="#cbb8e8" text-anchor="middle">업로드는 내가 선택할 때만 이루어집니다</text>
+    </g>
+  </g>
+
+  <!-- ═══════════ ARTBOARD 2 · Song Select (390×844) ═══════════ -->
+  <g id="select" transform="translate(1010,0)">
+    <text x="0" y="24" font-size="15" font-weight="800" fill="#111">Song Select — /select</text>
+    <g transform="translate(0,40)">
+      <rect width="390" height="844" fill="url(#bg)"/>
+      <text x="24" y="42" font-size="20" fill="#ffffff">←</text>
+      <text x="195" y="42" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle">곡 선택</text>
+
+      <!-- song card 1 -->
+      <g transform="translate(24,66)">
+        <rect width="342" height="132" rx="16" fill="#ffffff" fill-opacity="0.07" stroke="#ffffff" stroke-opacity="0.1"/>
+        <text x="16" y="32" font-size="17" font-weight="800" fill="#ffffff">Neon Beat</text>
+        <text x="16" y="52" font-size="12" fill="#cbb8e8">CatchRhy · 128 BPM · 60초</text>
+        <text x="16" y="70" font-size="12" fill="#cbb8e8">내 최고 기록: SS · 128,400점</text>
+        <rect x="238" y="24" width="90" height="32" rx="16" fill="#ffffff" fill-opacity="0.16"/>
+        <text x="283" y="44" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">▶ 미리듣기</text>
+        <rect x="16" y="86" width="58" height="32" rx="16" fill="#ff5c9e"/>
+        <text x="45" y="106" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">Easy</text>
+        <rect x="82" y="86" width="72" height="32" rx="16" fill="#ffffff" fill-opacity="0.14"/>
+        <text x="118" y="106" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">Normal</text>
+        <rect x="242" y="86" width="86" height="32" rx="16" fill="#ff5c9e"/>
+        <text x="285" y="106" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">게임 시작</text>
+      </g>
+      <!-- song card 2 -->
+      <g transform="translate(24,216)">
+        <rect width="342" height="132" rx="16" fill="#ffffff" fill-opacity="0.07" stroke="#ffffff" stroke-opacity="0.1"/>
+        <text x="16" y="32" font-size="17" font-weight="800" fill="#ffffff">Bubble Pop</text>
+        <text x="16" y="52" font-size="12" fill="#cbb8e8">CatchRhy · 140 BPM · 55초</text>
+        <text x="16" y="70" font-size="12" fill="#cbb8e8">내 최고 기록: 없음</text>
+        <rect x="238" y="24" width="90" height="32" rx="16" fill="#ffffff" fill-opacity="0.16"/>
+        <text x="283" y="44" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">▶ 미리듣기</text>
+        <rect x="16" y="86" width="58" height="32" rx="16" fill="#ffffff" fill-opacity="0.14"/>
+        <text x="45" y="106" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">Easy</text>
+        <rect x="82" y="86" width="72" height="32" rx="16" fill="#ff5c9e"/>
+        <text x="118" y="106" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">Normal</text>
+        <rect x="242" y="86" width="86" height="32" rx="16" fill="#ff5c9e"/>
+        <text x="285" y="106" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">게임 시작</text>
+      </g>
+      <!-- song card 3 -->
+      <g transform="translate(24,366)">
+        <rect width="342" height="132" rx="16" fill="#ffffff" fill-opacity="0.07" stroke="#ffffff" stroke-opacity="0.1"/>
+        <text x="16" y="32" font-size="17" font-weight="800" fill="#ffffff">Starlight Run</text>
+        <text x="16" y="52" font-size="12" fill="#cbb8e8">CatchRhy · 118 BPM · 62초</text>
+        <text x="16" y="70" font-size="12" fill="#cbb8e8">내 최고 기록: A · 96,200점</text>
+        <rect x="238" y="24" width="90" height="32" rx="16" fill="#ffffff" fill-opacity="0.16"/>
+        <text x="283" y="44" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">■ 정지</text>
+        <rect x="16" y="86" width="58" height="32" rx="16" fill="#ffffff" fill-opacity="0.14"/>
+        <text x="45" y="106" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">Easy</text>
+        <rect x="82" y="86" width="72" height="32" rx="16" fill="#ff5c9e"/>
+        <text x="118" y="106" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">Normal</text>
+        <rect x="242" y="86" width="86" height="32" rx="16" fill="#ff5c9e"/>
+        <text x="285" y="106" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">게임 시작</text>
+      </g>
+      <text x="195" y="534" font-size="12" fill="#cbb8e8" text-anchor="middle">게임 시작 시 카메라 권한을 요청합니다</text>
+    </g>
+  </g>
+
+  <!-- ═══════════ ARTBOARD 3 · Play HUD (390×844) ═══════════ -->
+  <g id="play" transform="translate(1460,0)">
+    <text x="0" y="24" font-size="15" font-weight="800" fill="#111">Play — /play (카메라 영상 위 HUD)</text>
+    <g transform="translate(0,40)">
+      <rect width="390" height="844" fill="url(#playbg)"/>
+      <!-- timer -->
+      <rect x="10" y="10" width="64" height="30" rx="12" fill="#000000" fill-opacity="0.45"/>
+      <text x="42" y="30" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">00:42</text>
+      <!-- score -->
+      <rect x="125" y="10" width="140" height="46" rx="12" fill="#000000" fill-opacity="0.45"/>
+      <text x="195" y="26" font-size="9" font-weight="700" fill="#ff9cc0" text-anchor="middle" letter-spacing="1">SCORE</text>
+      <text x="195" y="47" font-size="18" font-weight="800" fill="#ff9cc0" text-anchor="middle">12,400 <tspan fill="#ffd93d" font-size="12">x 3</tspan></text>
+      <!-- pause -->
+      <circle cx="358" cy="32" r="22" fill="#000000" fill-opacity="0.55"/>
+      <text x="358" y="38" font-size="14" fill="#ffffff" text-anchor="middle">⏸</text>
+      <!-- combo -->
+      <text x="14" y="140" font-size="11" font-weight="700" fill="#ff9cc0">COMBO</text>
+      <text x="14" y="170" font-size="28" font-weight="800" fill="#ffffff">27</text>
+      <!-- target -->
+      <rect x="272" y="118" width="108" height="66" rx="12" fill="#000000" fill-opacity="0.45"/>
+      <text x="326" y="134" font-size="9" font-weight="700" fill="#ff9cc0" text-anchor="middle" letter-spacing="1">TARGET</text>
+      <text x="326" y="150" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">두근 단어</text>
+      <text x="326" y="172" font-size="17" font-weight="800" fill="#ffffff" text-anchor="middle">8 / 15</text>
+      <!-- 노트 밴드 가이드: y 0.45~0.73 -->
+      <line x1="0" y1="380" x2="390" y2="380" stroke="#ff9cc0" stroke-opacity="0.35" stroke-dasharray="6 5"/>
+      <line x1="0" y1="616" x2="390" y2="616" stroke="#ff9cc0" stroke-opacity="0.35" stroke-dasharray="6 5"/>
+      <text x="382" y="374" font-size="9" fill="#ff9cc0" fill-opacity="0.7" text-anchor="end">y = 0.45</text>
+      <text x="382" y="632" font-size="9" fill="#ff9cc0" fill-opacity="0.7" text-anchor="end">y = 0.73</text>
+      <!-- bubbles -->
+      <circle cx="105" cy="470" r="44" fill="none" stroke="#ffffff" stroke-opacity="0.85" stroke-width="2.5"/>
+      <circle cx="105" cy="470" r="30" fill="url(#catch)"/>
+      <text x="105" y="475" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">두근</text>
+      <circle cx="300" cy="540" r="30" fill="url(#decoy)"/>
+      <text x="300" y="545" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">설렘</text>
+      <text x="200" y="410" font-size="22" font-weight="800" fill="#ffd93d" text-anchor="middle">PERFECT!</text>
+      <!-- mission -->
+      <rect x="31" y="700" width="328" height="52" rx="14" fill="#000000" fill-opacity="0.55"/>
+      <text x="195" y="720" font-size="9" font-weight="700" fill="#ff9cc0" text-anchor="middle" letter-spacing="1">MISSION</text>
+      <text x="195" y="740" font-size="12" fill="#ffffff" text-anchor="middle">'두근' 단어만 잡아라!</text>
+    </g>
+  </g>
+
+  <!-- ═══════════ ARTBOARD 4 · Result (390×844) ═══════════ -->
+  <g id="result" transform="translate(1910,0)">
+    <text x="0" y="24" font-size="15" font-weight="800" fill="#111">Result — 랭크·기록·공유</text>
+    <g transform="translate(0,40)">
+      <rect width="390" height="844" fill="#150b24"/>
+      <text x="195" y="130" font-size="84" font-weight="900" fill="#ffd93d" text-anchor="middle">SS</text>
+      <text x="195" y="164" font-size="14" font-weight="800" fill="#6bffb0" text-anchor="middle">★ FULL COMBO ★</text>
+      <rect x="143" y="176" width="104" height="24" rx="12" fill="#ff5c9e" fill-opacity="0.22"/>
+      <text x="195" y="192" font-size="11" font-weight="700" fill="#ff9cc0" text-anchor="middle">NEW RECORD!</text>
+      <text x="195" y="240" font-size="30" font-weight="800" fill="#ff9cc0" text-anchor="middle">128,400</text>
+      <!-- table -->
+      <text x="80" y="276" font-size="13" fill="#e8ddf5">Accuracy</text><text x="310" y="276" font-size="13" font-weight="700" fill="#ffffff" text-anchor="end">94.2%</text>
+      <text x="80" y="298" font-size="13" fill="#e8ddf5">PERFECT / GREAT / GOOD</text><text x="310" y="298" font-size="13" font-weight="700" fill="#ffffff" text-anchor="end">18 / 6 / 2</text>
+      <text x="80" y="320" font-size="13" fill="#e8ddf5">MISS / 함정 접촉</text><text x="310" y="320" font-size="13" font-weight="700" fill="#ffffff" text-anchor="end">0 / 0</text>
+      <text x="80" y="342" font-size="13" fill="#e8ddf5">MAX COMBO</text><text x="310" y="342" font-size="13" font-weight="700" fill="#ffffff" text-anchor="end">26</text>
+      <!-- tabs -->
+      <rect x="93" y="364" width="204" height="36" rx="18" fill="#000000" fill-opacity="0.45"/>
+      <rect x="97" y="368" width="108" height="28" rx="14" fill="#ff5c9e"/>
+      <text x="151" y="386" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">하이라이트 15초</text>
+      <text x="250" y="386" font-size="12" font-weight="700" fill="#cbb8e8" text-anchor="middle">전체 영상</text>
+      <!-- video -->
+      <rect x="75" y="416" width="240" height="150" rx="12" fill="#000000" stroke="#ffffff" stroke-opacity="0.2"/>
+      <text x="195" y="496" font-size="12" fill="#cbb8e8" text-anchor="middle">▶ 플레이 영상</text>
+      <!-- actions -->
+      <rect x="82" y="590" width="110" height="44" rx="22" fill="#ff5c9e"/>
+      <text x="137" y="617" font-size="14" font-weight="800" fill="#ffffff" text-anchor="middle">공유하기</text>
+      <rect x="202" y="590" width="106" height="44" rx="22" fill="#ffffff" fill-opacity="0.16"/>
+      <text x="255" y="617" font-size="14" font-weight="800" fill="#ffffff" text-anchor="middle">영상 저장</text>
+      <text x="120" y="672" font-size="12" fill="#cbb8e8">손 인식이 잘 됐나요?</text>
+      <circle cx="262" cy="668" r="15" fill="#ffffff" fill-opacity="0.16"/><text x="262" y="673" font-size="11" text-anchor="middle">👍</text>
+      <circle cx="300" cy="668" r="15" fill="#ffffff" fill-opacity="0.16"/><text x="300" y="673" font-size="11" text-anchor="middle">👎</text>
+      <rect x="104" y="700" width="86" height="34" rx="17" fill="#ffffff" fill-opacity="0.16"/>
+      <text x="147" y="722" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">다시하기</text>
+      <rect x="200" y="700" width="86" height="34" rx="17" fill="#ffffff" fill-opacity="0.16"/>
+      <text x="243" y="722" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">다른 곡</text>
+    </g>
+  </g>
+</svg>
