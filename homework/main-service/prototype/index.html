@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>CatchRhy — 기술 스파이크</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    /* .overlay의 display:flex가 hidden 속성(UA 스타일)을 덮어쓰지 않도록 강제 */
+    [hidden] { display: none !important; }
+    html, body { height: 100%; overflow: hidden; background: #111; font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; }
+    #app { position: relative; width: 100%; height: 100dvh; }
+    #stage { position: absolute; inset: 0; width: 100%; height: 100%; }
+    video { display: none; }
+
+    #stats {
+      position: absolute; bottom: 10px; left: 10px; z-index: 10;
+      background: rgba(0, 0, 0, 0.55); color: #fff; border-radius: 10px;
+      padding: 8px 12px; font-size: 11px; line-height: 1.7;
+      font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+      pointer-events: none; white-space: pre;
+    }
+    #stats .warn { color: #ff6b81; font-weight: 700; }
+    #stats .ok { color: #6bffb0; }
+
+    #controls {
+      position: absolute; top: max(10px, env(safe-area-inset-top)); right: 10px; z-index: 10;
+      display: flex; gap: 8px;
+    }
+    #controls button {
+      appearance: none; border: none; border-radius: 999px;
+      padding: 10px 16px; font-size: 13px; font-weight: 700; cursor: pointer;
+      background: rgba(0, 0, 0, 0.6); color: #fff; backdrop-filter: blur(6px);
+    }
+    #controls button:disabled { opacity: 0.4; cursor: default; }
+
+    #toast {
+      position: absolute; bottom: 84px; left: 50%; transform: translateX(-50%); z-index: 20;
+      background: rgba(0, 0, 0, 0.8); color: #fff; border-radius: 999px;
+      padding: 10px 18px; font-size: 13px; white-space: nowrap;
+      transition: opacity 0.3s; opacity: 0; pointer-events: none;
+    }
+    #toast.show { opacity: 1; }
+
+    .overlay {
+      position: absolute; inset: 0; z-index: 30;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+      color: #fff; text-align: center; padding: 24px;
+    }
+    .overlay.opaque { background: linear-gradient(160deg, #1a1028, #2b1440); }
+    .overlay.dim { background: rgba(20, 10, 35, 0.72); backdrop-filter: blur(4px); }
+    .overlay h1 { font-size: 28px; letter-spacing: 1px; }
+    .overlay h1 em { font-style: normal; color: #ff5c9e; }
+    .overlay h2 { font-size: 22px; }
+    .overlay p { font-size: 13px; color: #cbb8e8; line-height: 1.8; }
+    .overlay .btn {
+      margin-top: 12px; appearance: none; border: none; border-radius: 999px;
+      padding: 16px 42px; font-size: 17px; font-weight: 800; cursor: pointer;
+      background: #ff5c9e; color: #fff; text-decoration: none; display: inline-block;
+    }
+    .overlay .btn.secondary { background: rgba(255, 255, 255, 0.18); font-size: 14px; padding: 12px 28px; }
+    .overlay .status { font-size: 12px; color: #8f7bb0; min-height: 18px; }
+
+    #countdown {
+      position: absolute; inset: 0; z-index: 25; display: none;
+      align-items: center; justify-content: center; pointer-events: none;
+      font-size: 120px; font-weight: 900; color: #fff;
+      text-shadow: 0 4px 30px rgba(255, 92, 158, 0.8);
+    }
+
+    #result .rank { font-size: 84px; font-weight: 900; color: #ffd93d; line-height: 1.1; text-shadow: 0 4px 30px rgba(255, 217, 61, 0.5); }
+    #result .score { font-size: 30px; font-weight: 800; color: #ff9cc0; }
+    #result .fc { color: #6bffb0; font-weight: 800; font-size: 15px; }
+    #result table { border-collapse: collapse; font-size: 13px; color: #e8ddf5; }
+    #result td { padding: 2px 12px; }
+    #result td:last-child { text-align: right; font-weight: 700; color: #fff; }
+    #result .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <canvas id="stage"></canvas>
+    <video id="cam" playsinline muted autoplay></video>
+
+    <div id="stats" hidden></div>
+
+    <div id="controls" hidden>
+      <button id="btn-res">720p → 480p</button>
+    </div>
+
+    <div id="countdown"></div>
+    <div id="toast"></div>
+
+    <div class="overlay opaque" id="intro">
+      <h1>Catch<em>Rhy</em> 기술 스파이크 v2</h1>
+      <p>
+        데모 트랙(120 BPM) + 채보 기반 판정 엔진.<br />
+        손으로 <b style="color:#ff9cc0">핑크 버블</b>을 잡고, <b style="color:#b18cff">퍼플 버블</b>은 피하세요.<br />
+        포즈 타임엔 <b style="color:#ffd93d">🙌 양손 올리기 / 🫶 하트</b>!
+      </p>
+      <button class="btn" id="btn-start">카메라 시작</button>
+      <div class="status" id="intro-status"></div>
+    </div>
+
+    <div class="overlay dim" id="song-ready" hidden>
+      <h2>데모 트랙 · 120 BPM · 60초</h2>
+      <p id="song-mission"></p>
+      <button class="btn" id="btn-song">게임 시작</button>
+      <p style="font-size:11px">시작하면 플레이 영상이 자동 녹화됩니다 (기기에서만 처리)</p>
+    </div>
+
+    <div class="overlay dim" id="result" hidden>
+      <div class="rank" id="res-rank"></div>
+      <div class="fc" id="res-fc"></div>
+      <div class="score" id="res-score"></div>
+      <table>
+        <tr><td>Accuracy</td><td id="res-acc"></td></tr>
+        <tr><td>PERFECT</td><td id="res-p"></td></tr>
+        <tr><td>GREAT</td><td id="res-g"></td></tr>
+        <tr><td>GOOD</td><td id="res-gd"></td></tr>
+        <tr><td>MISS</td><td id="res-m"></td></tr>
+        <tr><td>함정 접촉</td><td id="res-x"></td></tr>
+        <tr><td>MAX COMBO</td><td id="res-combo"></td></tr>
+      </table>
+      <div class="actions">
+        <button class="btn" id="btn-retry">다시하기</button>
+        <a class="btn secondary" id="btn-download" hidden download>영상 다운로드</a>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
