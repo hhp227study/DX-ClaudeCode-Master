@@ -1,0 +1,29 @@
+node_modules/
+.next/
+out/
+*.log
+.env*
+!.env.example
+
+# Claude Code 개인 설정 (커밋 금지)
+.claude/settings.local.json
+
+# 설치형 에이전트 스킬 — skills-lock.json으로 재설치 가능
+.agents/
+
+# Next.js / 빌드 산출물
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+coverage/
+
+# Supabase CLI 임시 파일
+supabase/.temp/
+supabase/.branches/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
