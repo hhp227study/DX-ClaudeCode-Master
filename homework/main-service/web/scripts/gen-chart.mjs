@@ -46,8 +46,13 @@ const APPROACH_WINDOW_MS = 2200; // 접근 2000ms + 판정 여유 — 이 안의
 // 구간별 간격(비트) — BPM에 비례해 빨라지고, 곡이 진행될수록 고조된다.
 // 2026-07-12 난이도 개편(유저): 구 easy(6/5/4) 폐지, 구 normal(4/3/2)이 easy로,
 // normal은 한 단계 더 촘촘하게(3/2.5/2). 물리 하한 0.75초는 그대로라
-// 고BPM 곡(카라멜단센 165)은 후반 구간에서 easy와 간격이 수렴한다 — 의도된 동작
-const SECTION_BEATS = { easy: [4, 3, 2], normal: [3, 2.5, 2] };
+// 고BPM 곡(카라멜단센 165)은 후반 구간에서 easy와 간격이 수렴한다 — 의도된 동작.
+// sparse는 2026-07-22 추가 — 전곡 수록 시 인트로·브레이크다운처럼 "쉬어가는" 구간용.
+// 비율 배치(합성 곡)는 low/mid/high 세 단계만 쓴다 (기존 동작 그대로)
+const SECTION_BEATS = {
+  easy: { sparse: 6, low: 4, mid: 3, high: 2 },
+  normal: { sparse: 5, low: 3, mid: 2.5, high: 2 },
+};
 
 // 앵커존/밴드 (reference 분석: 드웰 x 쌍봉. y는 best.mp4 표준 — 어깨선 높이,
 // 드웰 y IQR 0.52~0.59 → 게임 프레이밍으로 환산해 밴드 상부에 집중)
@@ -179,13 +184,13 @@ for (const song of catalog.songs) {
   const sec3Start = sec2End + 6000;
   // songs.json에 sections가 있으면 실제 곡 구조를 그대로 쓴다 (level = 난이도별 간격 배열 인덱스).
   // 없으면 기존 3구간 비율 배치 — 합성 곡은 구조가 균질해서 비율로 충분하다
-  const sections = (beatsArr) =>
+  const sections = (beats) =>
     song.sections
-      ? song.sections.map((s) => [snap(s.from * 1000), s.to * 1000, beatsFor(beatsArr[s.level])])
+      ? song.sections.map((s) => [snap(s.from * 1000), s.to * 1000, beatsFor(beats[s.level])])
       : [
-          [snap(4000), sec1End, beatsFor(beatsArr[0])],
-          [snap(sec2Start), sec2End, beatsFor(beatsArr[1])],
-          [snap(sec3Start), d - 4000, beatsFor(beatsArr[2])],
+          [snap(4000), sec1End, beatsFor(beats.low)],
+          [snap(sec2Start), sec2End, beatsFor(beats.mid)],
+          [snap(sec3Start), d - 4000, beatsFor(beats.high)],
         ];
   // 포즈 노트도 명시 배치 우선 — 구간 사이 빈 구간(전주/브레이크)에 놓고 비트에 스냅한다.
   // 폴백(합성 곡)은 기존대로 구간 끝 +2초, 스냅하지 않는다 — 캐치 노트가 없는 자리라

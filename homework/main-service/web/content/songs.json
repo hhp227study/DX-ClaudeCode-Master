@@ -167,15 +167,14 @@
       "title": "Caramelldansen",
       "artist": "Caramella Girls",
       "bpm": 164.73,
-      "durationSec": 87.6,
+      "durationSec": 175.2,
       "difficulties": ["easy", "normal"],
       "targetWord": "OWA",
       "mission": "강아지귀 스웨이! 오-오-오아-오아 리듬을 타요",
-      "licenseNote": "원곡 음원 수록: Caramella Girls 'Caramelldansen (HD Version, Swedish Original)'. 하이라이트 0~87.6초만 프레임 단위로 잘라 담음(재인코딩 없음). 상업 음원이므로 배포 시 라이선스 확인 필요",
+      "licenseNote": "원곡 음원 전곡 수록: Caramella Girls 'Caramelldansen (HD Version, Swedish Original)' 175초. 상업 음원이므로 배포 시 라이선스 확인 필요",
       "audio": {
         "url": "/audio/caramelldansen.mp3",
         "firstBeatMs": 162.5,
-        "fadeOutMs": 1800,
         "previewFromMs": 29300
       },
       "choreo": {
@@ -186,16 +185,21 @@
         }
       },
       "sections": [
-        { "from": 14.7, "to": 29.0, "level": 0, "label": "빌드" },
-        { "from": 29.3, "to": 46.5, "level": 1, "label": "후렴1" },
-        { "from": 49.7, "to": 62.0, "level": 0, "label": "2절" },
-        { "from": 65.0, "to": 75.5, "level": 1, "label": "프리코러스" },
-        { "from": 75.9, "to": 87.0, "level": 2, "label": "후렴2" }
+        { "from": 6.0,   "to": 17.6,  "level": "sparse", "label": "인트로" },
+        { "from": 17.6,  "to": 29.3,  "level": "low",    "label": "빌드" },
+        { "from": 29.3,  "to": 46.8,  "level": "high",   "label": "후렴1" },
+        { "from": 49.7,  "to": 64.3,  "level": "low",    "label": "2절" },
+        { "from": 64.3,  "to": 75.9,  "level": "mid",    "label": "프리코러스" },
+        { "from": 75.9,  "to": 93.4,  "level": "high",   "label": "후렴2" },
+        { "from": 96.3,  "to": 110.9, "level": "low",    "label": "3절" },
+        { "from": 110.9, "to": 122.5, "level": "mid",    "label": "프리코러스2" },
+        { "from": 122.5, "to": 132.7, "level": "sparse", "label": "브레이크다운" },
+        { "from": 134.2, "to": 169.2, "level": "mid",    "label": "마지막 후렴" }
       ],
       "poses": [
-        { "at": 47.4, "pose": "hands_up" },
-        { "at": 63.2, "pose": "heart" }
-      ]
-    }
+        { "at": 47.5, "pose": "heart" },
+        { "at": 94.5, "pose": "hands_up" },
+        { "at": 133.0, "pose": "heart" }
+      ]    }
   ]
 }

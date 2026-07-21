@@ -37,7 +37,7 @@ GA4 프로퍼티 생성 후 추가하면 된다.
 | `lib/engine/track.ts` | `TrackSpec` 유니언 + `createTrack` 팩토리 — 게임/에디터는 MusicTrack만 안다 |
 | `lib/analytics.ts` | GA4 이벤트 수집 (FR-14) — env 미설정이면 no-op, 공통 파라미터 자동 첨부 |
 | `content/songs.json` | 곡 정의 단일 소스 — 메타+사운드(synth 패턴 또는 audio 파일)+구간/포즈+미션. 앱과 채보 생성기가 함께 읽음 |
-| `public/audio/` | 음원 파일 곡의 MP3 (카라멜단센 하이라이트 87.6초) |
+| `public/audio/` | 음원 파일 곡의 MP3 (카라멜단센 전곡 175초) |
 | `supabase/setup.sql` | DB 스키마+RLS+가입 트리거+데모 시드 — 대시보드 SQL Editor에 붙여넣기 |
 | `supabase/seed_002_songs.sql` | 신곡 4곡+채보 8개 시드 (setup.sql 실행 후 추가 실행) |
 | `supabase/seed_003_caramelldansen.sql` | 카라멜단센 신스 커버+채보 2개 시드 (2026-07-12) |
