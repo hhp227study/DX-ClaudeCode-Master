@@ -69,6 +69,21 @@ const REF_SHOULDER_W = 0.7; // 화면 가로 대비 어깨너비
 const REF_SHOULDER_Y = 0.55; // 화면 세로 대비 어깨선
 
 /**
+ * 가로 리치 배율 — 저작 좌표를 그대로 몸 단위로 옮기면 팔을 너무 좁게 쓴다.
+ *
+ * 저작 x 한계(0.10~0.90)는 원래 "버블이 화면 밖으로 안 나가게" 정한 화면 기준 값이라,
+ * 몸 단위로 환산하면 중심에서 ±0.57 어깨너비밖에 안 된다. 사람이 팔을 다 뻗으면
+ * 약 ±2.1 어깨너비까지 가므로 실제 리치의 27% 수준이다. 저작 프레임이 셀카(어깨가
+ * 화면 폭의 70%)라 팔을 오므리고 찍은 탓인데, 게임은 카메라가 더 멀어 그럴 이유가 없다.
+ *
+ * 그래서 가로만 이 배율로 벌린다(세로는 몸 기준 그대로 — 머리 위 노트가 더 올라가면 안 된다).
+ * 2.0이면 최대 ±1.14 어깨너비 = 완전히 뻗은 팔의 절반 정도라 편하게 닿는다.
+ */
+const X_REACH = 2.0;
+const X_AUTHORED_HALF = 0.4; // 저작 좌표의 중심 대비 최대 오프셋 (0.10~0.90)
+const X_REACH_MIN = 0.7; // 화면이 좁아도 이보다 더 오므리지는 않는다
+
+/**
  * 채보 좌표를 몸 기준으로 재배치한다.
  *
  * 기존 방식은 채보 x/y를 캔버스 폭·높이에 그대로 곱했다. 그래서 세로 폰(9:19.5)과
@@ -80,31 +95,44 @@ const REF_SHOULDER_Y = 0.55; // 화면 세로 대비 어깨선
  * 가로/세로 어느 쪽이든 몸에 대한 상대 위치와 모양이 보존된다.
  */
 export function remapChartToBody(chart: Chart, a: BodyAnchor): Chart {
-  const refH = 1 / REF_ASPECT; // 저작 화면 높이 (가로=1 기준)
-  const unit = a.shoulderPx / REF_SHOULDER_W; // 저작 화면 가로 1.0에 해당하는 픽셀
-  const map = (x: number, y: number) => ({
-    x: +clamp01((a.cx + (x - 0.5) * unit) / a.w, 0.06, 0.94).toFixed(3),
-    y: +clamp01((a.cy + (y - REF_SHOULDER_Y) * refH * unit) / a.h, 0.06, 0.94).toFixed(3),
-  });
+  const map = bodyMapper(a);
   return {
     ...chart,
-    notes: chart.notes.map((n) =>
-      n.x === undefined || n.y === undefined ? n : { ...n, ...map(n.x, n.y) },
-    ),
+    notes: chart.notes.map((n) => {
+      if (n.x === undefined || n.y === undefined) return n;
+      const p = map(n.x, n.y);
+      return { ...n, x: +p.x.toFixed(3), y: +p.y.toFixed(3) };
+    }),
   };
 }
 
 const clamp01 = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v));
 
-/** 몸 기준 좌표 한 점 — 보정 버블처럼 채보 밖에서 쓰는 좌표용 */
-export const bodyPoint = (x: number, y: number, a: BodyAnchor): { x: number; y: number } => {
-  const refH = 1 / REF_ASPECT;
-  const unit = a.shoulderPx / REF_SHOULDER_W;
-  return {
-    x: clamp01((a.cx + (x - 0.5) * unit) / a.w, 0.06, 0.94),
+/**
+ * 저작 좌표 → 화면 좌표 변환기.
+ *
+ * 가로 리치(X_REACH)는 화면에 들어가는 만큼만 쓴다. 세로 폰처럼 좁은 화면에서는
+ * 완전한 리치를 주면 노트가 화면(그리고 카메라 화각) 밖으로 나가 잡을 수 없기 때문이다.
+ * 그래서 "몸 대비 같은 위치"는 세로에서 엄밀히 유지되고, 가로는 **화면이 허용하는 만큼
+ * 최대한 넓게**가 된다 — 가로 PC에서는 X_REACH를 다 쓰고, 세로 폰에서는 화면에 맞춰 좁아진다.
+ */
+function bodyMapper(a: BodyAnchor): (x: number, y: number) => { x: number; y: number } {
+  const refH = 1 / REF_ASPECT; // 저작 화면 높이 (가로=1 기준)
+  const unit = a.shoulderPx / REF_SHOULDER_W; // 저작 화면 가로 1.0에 해당하는 픽셀
+  // 버블이 잘리지 않게 가장자리 여백을 빼고, 몸 중심에서 화면 끝까지 남은 폭에 맞춘다
+  const margin = 0.09 * Math.min(a.w, a.h);
+  const roomPx = Math.max(0, Math.min(a.cx, a.w - a.cx) - margin);
+  const fit = roomPx / (X_AUTHORED_HALF * unit);
+  const reach = Math.max(X_REACH_MIN, Math.min(X_REACH, fit));
+  return (x, y) => ({
+    x: clamp01((a.cx + (x - 0.5) * unit * reach) / a.w, 0.06, 0.94),
     y: clamp01((a.cy + (y - REF_SHOULDER_Y) * refH * unit) / a.h, 0.06, 0.94),
-  };
-};
+  });
+}
+
+/** 몸 기준 좌표 한 점 — 보정 버블처럼 채보 밖에서 쓰는 좌표용 */
+export const bodyPoint = (x: number, y: number, a: BodyAnchor): { x: number; y: number } =>
+  bodyMapper(a)(x, y);
 
 export function remapChartForFraming(chart: Chart, framing: Framing): Chart {
   if (framing !== 'fullbody') return chart;
