@@ -271,7 +271,8 @@ export class PlaySession {
     this.countdownThen(async () => {
       await this.track.start();
       try {
-        this.recorder.start(this.canvas); // FR-12: 플레이 자동 녹화
+        // 곡 소리를 함께 녹화 — 캔버스 스트림에는 소리가 없다 (start 이후에만 잡힌다)
+        this.recorder.start(this.canvas, this.track.captureStream()); // FR-12: 플레이 자동 녹화
       } catch {
         this.opts.onToast('이 브라우저는 녹화를 지원하지 않습니다');
       }
@@ -314,7 +315,6 @@ export class PlaySession {
     } else {
       this.setPhase('result');
     }
-    await this.track.stop();
 
     let video: PlayResultPayload['video'] = null;
     try {
@@ -328,6 +328,10 @@ export class PlaySession {
       }
     } catch {
       this.opts.onToast('녹화 저장에 실패했습니다');
+    } finally {
+      // 오디오는 녹화를 끝낸 뒤에 내린다 — 먼저 stop하면 AudioContext가 닫히면서
+      // 녹음 스트림의 오디오 트랙이 끝나 엔드카드 구간이 잘릴 수 있다
+      await this.track.stop();
     }
     this.setPhase('result');
     this.opts.onResult({ result, gameplayMs, video });

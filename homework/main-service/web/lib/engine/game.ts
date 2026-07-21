@@ -56,6 +56,12 @@ interface LiveNote {
   def: ChartNote;
   poseOk: number;
   poseTotal: number;
+  /**
+   * 판정 시각 전에 손이 버블에 닿아 있던 순간 중 판정 시각에 가장 가까웠던 오차(ms).
+   * 미리 손을 대고 기다리는 플레이(이 게임의 자연스러운 동작)를 제값으로 쳐주기 위한 것 —
+   * 자세한 근거는 update()의 catch 판정부 주석 참고
+   */
+  bestAdt?: number;
 }
 
 interface Feedback {
@@ -79,13 +85,24 @@ const POSE_LABEL: Record<string, string> = {
   heart: '🫶 머리 위 하트!',
 };
 
+/** 판정 오차(ms, 부호 무관)를 등급으로 */
+const gradeOf = (dt: number): Grade => {
+  const adt = Math.abs(dt);
+  return adt <= JUDGEMENT.PERFECT_MS ? 'PERFECT' : adt <= JUDGEMENT.GREAT_MS ? 'GREAT' : 'GOOD';
+};
+
+/**
+ * 랭크 구간 — 2026-07-22 완화. 카메라 인식 게임이라 손 추적 지터·조명·프레이밍 때문에
+ * 터치 게임만큼의 정밀도가 안 나온다. 랭크 종류는 DB CHECK 제약(plays.rank)과 맞춰
+ * 7단계를 유지하고 경계만 낮췄다.
+ */
 export function rankOf(accuracy: number): string {
-  if (accuracy >= 97) return 'SSS';
-  if (accuracy >= 92) return 'SS';
-  if (accuracy >= 85) return 'S';
-  if (accuracy >= 75) return 'A';
-  if (accuracy >= 60) return 'B';
-  if (accuracy >= 40) return 'C';
+  if (accuracy >= 96) return 'SSS';
+  if (accuracy >= 90) return 'SS';
+  if (accuracy >= 82) return 'S';
+  if (accuracy >= 72) return 'A';
+  if (accuracy >= 55) return 'B';
+  if (accuracy >= 35) return 'C';
   return 'F';
 }
 
@@ -196,17 +213,28 @@ export class ChartGame {
         return dt <= DECOY_LINGER_MS; // 안 건드리면 조용히 소멸
       }
 
-      // catch: 윈도우(-250ms) 이전의 접촉은 무시
-      if (touched && dt >= -JUDGEMENT.GOOD_MS) {
-        const adt = Math.abs(dt);
-        const grade: Grade =
-          adt <= JUDGEMENT.PERFECT_MS ? 'PERFECT' : adt <= JUDGEMENT.GREAT_MS ? 'GREAT' : 'GOOD';
-        this.targetCaught++;
-        this.judge(grade, def.x ?? 0.5, def.y ?? 0.5, now, 'catch');
-        return false;
+      // catch 판정 — "정확한 순간에 터치"가 아니라 "버블을 잡는" 게임이라는 점이 핵심이다.
+      // 플레이어는 버블이 올 자리에 손을 미리 가져다 대고 기다린다(자연스러운 동작).
+      // 접촉 즉시 판정하면 윈도우가 열리는 첫 순간(dt = -250ms)에 걸려 무조건 GOOD이 되고,
+      // 아무리 잘해도 정확도가 30%대에 머문다 — 손을 미리 대는 유저일수록 손해였다.
+      // 그래서 판정 시각 전의 접촉은 "가장 가까웠던 오차"로만 기억해두고,
+      // 판정 시각을 지나는 순간(dt >= 0)에 판정한다 → 대고 기다리면 PERFECT.
+      if (touched) {
+        if (dt >= 0) {
+          this.targetCaught++;
+          this.judge(gradeOf(dt), def.x ?? 0.5, def.y ?? 0.5, now, 'catch');
+          return false;
+        }
+        if (dt >= -JUDGEMENT.GOOD_MS) n.bestAdt = Math.min(n.bestAdt ?? Infinity, -dt);
       }
       if (dt > JUDGEMENT.GOOD_MS) {
-        this.judge('MISS', def.x ?? 0.5, def.y ?? 0.5, now, 'catch');
+        // 만료 — 미리 닿았다가 판정 시각 전에 손을 뗀 경우는 그때의 최선 접근으로 쳐준다
+        if (n.bestAdt !== undefined) {
+          this.targetCaught++;
+          this.judge(gradeOf(n.bestAdt), def.x ?? 0.5, def.y ?? 0.5, now, 'catch');
+        } else {
+          this.judge('MISS', def.x ?? 0.5, def.y ?? 0.5, now, 'catch');
+        }
         return false;
       }
       return true;
@@ -240,9 +268,10 @@ export class ChartGame {
     const c = this.counts;
     const fullCombo = c.MISS === 0 && c.DECOY === 0;
     this.score += JUDGEMENT.CLEAR_BONUS + (fullCombo ? JUDGEMENT.FULL_COMBO_BONUS : 0);
+    // 등급 가중치 — GOOD 0.3은 "전부 잡아도 30%"라 캐주얼 게임엔 과했다 (2026-07-22 완화)
     const accuracy =
       this.judgeableTotal > 0
-        ? ((c.PERFECT * 1.0 + c.GREAT * 0.7 + c.GOOD * 0.3) / this.judgeableTotal) * 100
+        ? ((c.PERFECT * 1.0 + c.GREAT * 0.85 + c.GOOD * 0.5) / this.judgeableTotal) * 100
         : 0;
     return {
       score: this.score,

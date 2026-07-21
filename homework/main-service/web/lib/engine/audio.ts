@@ -32,6 +32,19 @@ export interface MusicTrack {
   stop(): Promise<void>;
   /** 판정 효과음 */
   playHit(grade: Grade): void;
+  /**
+   * 재생 중인 소리를 MediaStream으로 — 플레이 녹화(FR-12)에 곡을 담기 위한 것.
+   * start() 이후에만 유효하다 (그 전엔 AudioContext가 없어 null).
+   */
+  captureStream(): MediaStream | null;
+}
+
+/** master에서 갈라낸 녹음용 스트림 — 스피커 출력(destination)은 그대로 둔다 */
+export function captureFrom(ctx: AudioContext | null, master: GainNode | null): MediaStream | null {
+  if (!ctx || !master) return null;
+  const dest = ctx.createMediaStreamDestination();
+  master.connect(dest);
+  return dest.stream;
 }
 
 /** 판정 효과음 — 두 트랙 구현이 공유한다 (곡 소스와 무관한 UI 사운드) */
@@ -176,6 +189,10 @@ export class SynthTrack implements MusicTrack {
   /** 판정 효과음 */
   playHit(grade: Grade): void {
     if (this.ctx && this.master) playHitOn(this.ctx, this.master, grade);
+  }
+
+  captureStream(): MediaStream | null {
+    return captureFrom(this.ctx, this.master);
   }
 
   private kick(t: number): void {

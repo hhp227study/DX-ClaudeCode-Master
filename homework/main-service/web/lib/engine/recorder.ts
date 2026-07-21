@@ -1,17 +1,24 @@
 /**
  * canvas.captureStream + MediaRecorder 녹화 (FR-12).
  * Safari는 webm 미지원 → mp4 폴백 체인 (prd-detail.md R5).
+ *
+ * 곡 소리는 캔버스에 없으므로 audio 트랙을 따로 받아 합친다 (start의 2번째 인자).
+ * 넘기지 않으면 무음 영상이 된다 — 2026-07-22까지 그랬다.
  */
 
 const MIME_CANDIDATES = [
+  'video/webm;codecs=vp9,opus',
+  'video/webm;codecs=vp8,opus',
   'video/webm;codecs=vp9',
   'video/webm;codecs=vp8',
   'video/webm',
+  'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
   'video/mp4;codecs=avc1.42E01E',
   'video/mp4',
 ];
 
 const VIDEO_BITRATE = 2_500_000; // prd-detail.md R7: 2.5Mbps 상한
+const AUDIO_BITRATE = 128_000;
 
 export class Recorder {
   private recorder: MediaRecorder | null = null;
@@ -35,15 +42,21 @@ export class Recorder {
     return this.mimeType.includes('mp4') ? 'mp4' : 'webm';
   }
 
-  start(canvas: HTMLCanvasElement): void {
+  /** audio를 넘기면 곡 소리가 함께 녹화된다 (없으면 무음 영상) */
+  start(canvas: HTMLCanvasElement, audio?: MediaStream | null): void {
     const mime = Recorder.pickMime();
     if (!mime) throw new Error('이 브라우저는 녹화를 지원하지 않습니다');
     this.mimeType = mime;
     this.chunks = [];
-    const stream = canvas.captureStream(30);
+    const audioTracks = audio?.getAudioTracks() ?? [];
+    const stream = new MediaStream([
+      ...canvas.captureStream(30).getVideoTracks(),
+      ...audioTracks,
+    ]);
     this.recorder = new MediaRecorder(stream, {
       mimeType: mime,
       videoBitsPerSecond: VIDEO_BITRATE,
+      ...(audioTracks.length ? { audioBitsPerSecond: AUDIO_BITRATE } : {}),
     });
     this.recorder.ondataavailable = (e) => {
       if (e.data.size > 0) this.chunks.push(e.data);

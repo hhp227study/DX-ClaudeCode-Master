@@ -1,5 +1,5 @@
 import type { Grade } from './game';
-import { playHitOn, type MusicTrack } from './audio';
+import { captureFrom, playHitOn, type MusicTrack } from './audio';
 
 /**
  * 음원 파일 트랙 — MP3를 AudioBuffer로 디코딩해 재생한다.
@@ -157,5 +157,9 @@ export class FileTrack implements MusicTrack {
 
   playHit(grade: Grade): void {
     if (this.ctx && this.master) playHitOn(this.ctx, this.master, grade);
+  }
+
+  captureStream(): MediaStream | null {
+    return captureFrom(this.ctx, this.master);
   }
 }

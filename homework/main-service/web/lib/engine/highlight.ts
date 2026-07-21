@@ -25,6 +25,7 @@ export async function extractHighlight(source: Blob, spec: HighlightSpec): Promi
   video.muted = true;
   video.playsInline = true;
   video.preload = 'auto';
+  let audio: HighlightAudio | null = null;
 
   try {
     await waitEvent(video, 'loadedmetadata');
@@ -39,8 +40,9 @@ export async function extractHighlight(source: Blob, spec: HighlightSpec): Promi
     const ctx = canvas.getContext('2d')!;
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
+    audio = tapAudio(video);
     const recorder = new Recorder();
-    recorder.start(canvas);
+    recorder.start(canvas, audio?.stream ?? null);
     try {
       await video.play();
       await copyFramesUntil(video, ctx, endSec);
@@ -52,9 +54,36 @@ export async function extractHighlight(source: Blob, spec: HighlightSpec): Promi
       throw err;
     }
   } finally {
+    void audio?.close();
     video.removeAttribute('src');
     video.load();
     URL.revokeObjectURL(url);
+  }
+}
+
+interface HighlightAudio {
+  stream: MediaStream;
+  close(): Promise<void>;
+}
+
+/**
+ * 원본 녹화의 소리를 클립에도 담는다.
+ *
+ * MediaElementSource로 <video>의 오디오를 그래프로 끌어오고 ctx.destination에는
+ * 연결하지 않는다 — 녹음 스트림에만 흘려보내므로, 결과 화면 뒤에서 클립을 만드는 동안
+ * 유저에게는 재생음이 들리지 않는다(기존 muted 동작 유지). 라우팅이 성립한 뒤에만
+ * muted를 풀어야 안전하다: 실패 시엔 음소거 상태 그대로 무음 클립으로 폴백한다.
+ */
+function tapAudio(video: HTMLVideoElement): HighlightAudio | null {
+  try {
+    const ctx = new AudioContext();
+    const dest = ctx.createMediaStreamDestination();
+    ctx.createMediaElementSource(video).connect(dest);
+    video.muted = false;
+    void ctx.resume();
+    return { stream: dest.stream, close: () => ctx.close().catch(() => {}) };
+  } catch {
+    return null; // 오디오 없이 진행 (기존 동작)
   }
 }
 
