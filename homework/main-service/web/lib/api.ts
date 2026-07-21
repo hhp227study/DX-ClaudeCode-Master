@@ -1,6 +1,6 @@
 import type { Session, SupabaseClient } from '@supabase/supabase-js';
 import { getSupabase } from './supabase';
-import { SONGS, type Difficulty, type SongMeta } from './songs';
+import { SONGS, chartUrl, type Difficulty, type SongMeta } from './songs';
 import { loadAllBests, loadBest, saveBestIfBetter, type BestRecord } from './store';
 import type { GameResult } from './engine/game';
 
@@ -192,6 +192,26 @@ async function chartIdOf(
     .maybeSingle();
   if (data) chartIdCache.set(key, data.id);
   return data?.id ?? null;
+}
+
+// ─── 채보 URL 해석 (에디터 연동) ──────────────────────────────
+
+/** 에디터가 Storage에 저장한 채보(charts.chart_url) 우선, 없으면 정적 경로로 폴백 */
+export async function resolveChartUrl(songId: string, difficulty: Difficulty): Promise<string> {
+  const fallback = chartUrl(songId, difficulty);
+  const sb = getSupabase();
+  if (!sb) return fallback;
+  try {
+    const { data } = await sb
+      .from('charts')
+      .select('chart_url')
+      .eq('song_id', songId)
+      .eq('difficulty', difficulty)
+      .maybeSingle();
+    return data?.chart_url ?? fallback;
+  } catch {
+    return fallback;
+  }
 }
 
 // ─── 플레이 기록 저장 (FR-11, FR-17, API 5) ──────────────────
