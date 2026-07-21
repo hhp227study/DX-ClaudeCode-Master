@@ -91,14 +91,43 @@ CatchRhy(카메라 AI 리듬게임) MVP 개발을 이어서 진행하자.
      "AI 모델 로딩"에서 멈춤 — 에러 아님, 실기기 QA로 대체
 - reference/ 폴더는 .gitignore 처리됨 (인스타 다운로드 영상 — 저작권상 커밋 금지)
 
+- 2026-07-22 세션: **카라멜단센을 실제 음원(MP3)으로 교체 + 채보 재작성**
+  ① 오디오 엔진 이원화 — `MusicTrack` 인터페이스(engine/audio.ts) 아래 기존 `SynthTrack`과
+     새 `FileTrack`(engine/audio-file.ts). FileTrack은 `<audio>`가 아니라
+     decodeAudioData + AudioBufferSourceNode — 판정 클록이 AudioContext.currentTime이어야 하기
+     때문(R4). suspend/resume·timeMs 규약이 신스와 동일해 게임 루프는 어느 쪽인지 모른다.
+     `engine/track.ts`의 createTrack(TrackSpec)이 songs.json을 보고 고른다
+  ② songs.ts `synthOf` → `trackOf`로 교체 (play/select/editor 전부 경유). 카탈로그 타입은
+     JSON 구조 추론 대신 `CatalogSong` 명시 — 곡마다 synth/audio가 달라 유니언이 되면 접근이 막힌다
+  ③ 음원 분석 실측: **164.73 BPM, 첫 다운비트 162.5ms** (근거·방법은
+     docs/reference-choreo-analysis.md의 "실제 음원 도입" 절). 165로 반올림하면 87초에서
+     142ms 어긋나므로 카탈로그·채보는 164.73을 그대로 쓴다
+  ④ 원곡 175초 → 하이라이트 87.6초 (유저 선택: 인트로~후렴2). MP3를 **프레임 경계에서 잘라**
+     3.55MB로 수록(재인코딩 없음, 음질 손실 0). 끝 1.8초는 FileTrack이 페이드아웃
+  ⑤ gen-chart.mjs 확장 — 비트 그리드 원점이 0이 아닌 `firstBeatMs`, songs.json의
+     `sections`(곡 실제 구조에 맞춘 명시 구간)·`poses`(명시 포즈 배치) 지원.
+     구간 경계에서 물리 하한(0.75초)이 깨지는 것을 막는 전역 가드 추가.
+     폴백 경로는 그대로라 기존 10개 채보는 바이트 동일(회귀 없음) 확인
+  ⑥ 채보 easy 59 / normal 69노트. 검증: 0.5비트 그리드 오차 <0.5ms, 최소 간격 910ms,
+     y 0.45~0.73, **노트 지점 온셋 강도 +3.3σ**(무작위 지점 +0.04σ — 노트가 실제로 비트 위에 있다)
+  ⑦ 인코더 딜레이 검증 — Chrome headless의 decodeAudioData로 위상 재측정해 162.5ms 동일 확인
+     (디코더마다 앞머리 처리가 달라 채보 전체가 밀릴 수 있는데, 어긋남 없음)
+  ⑧ 곡 선택 미리듣기는 조용한 인트로 대신 후렴(29.3s)부터 — `audio.previewFromMs`
+  ⑨ seed_005_caramelldansen_audio.sql 작성 — **아직 미실행**
+  ⚠️ 상업 음원을 public/에 담아 공개 배포한다(유저 확정). 라이선스 리스크는 감수하는 선택이며,
+     신스 커버 원본은 커밋 ce462e1에 남아 있다
+
 ## 다음 작업
-1. 변경분 전체 커밋 (web/, prototype/, docs/ — 최초 커밋). 배포는 2026-07-21에 이미 완료했지만
-   git에는 아직 반영 안 됨 — 다음 세션 시작 전에 커밋부터 확인할 것 (유실 위험 계속됨)
-2. 에디터 실사용 QA: /admin/songs → 에디터 → 노트 수정(필드 드래그 x/y·타임라인 드래그 t)
+1. **seed_005_caramelldansen_audio.sql을 Supabase 대시보드에서 실행** — 실행 전까지 곡 목록의
+   카라멜단센은 옛 제목·노트 수(신스 커버 기준)로 보인다. 채보 JSON·음원은 배포에 이미 반영됨
+2. 폰 실기기에서 새 카라멜단센 체감 QA — 실제 음원이라 싱크가 눈에 띈다.
+   판정이 밀리면 설정의 오프셋 보정을 먼저 확인할 것 (곡 자체 그리드는 브라우저에서 검증됨)
+3. 에디터 실사용 QA: /admin/songs → 에디터 → 노트 수정(필드 드래그 x/y·타임라인 드래그 t)
    → 저장 → /play에서 바뀐 채보 로드 확인 (resolveChartUrl 경유)
    (마이그레이션 4종 seed_003·004·setup_002·setup_003 전부 실행 확인됨 — 2026-07-16)
-3. 배포된 프로덕션(https://catchrhy.vercel.app)에서 폰 실기기로 새 채보(특히 카라멜단센)·
-   난이도 개편·관리자 에디터 체감 재확인 — 로컬 빌드로만 확인했고 프로덕션 실기기 QA는 아직
+   ※ 에디터도 이제 음원 곡을 그대로 틀어놓고 편집할 수 있다(FileTrack seek 지원)
+4. 배포된 프로덕션(https://catchrhy.vercel.app)에서 나머지 곡·난이도 개편·관리자 에디터
+   체감 재확인 — 로컬 빌드로만 확인했고 프로덕션 실기기 QA는 아직
 ⚠️ 에디터로 저장한 곡이 있는 상태에서 seed_00N을 재실행하면 chart_url이 정적 경로로
    되돌아가 수제 채보가 빠진다 — 시드 재실행 전 /admin/songs에서 버전 확인
 
@@ -141,4 +170,4 @@ CatchRhy(카메라 AI 리듬게임) MVP 개발을 이어서 진행하자.
 
 ---
 
-*갱신: 2026-07-21 세션 종료 시점 — resolveChartUrl 누락 버그 수정 + `npx vercel deploy --prod`로 프로덕션 배포 완료(https://catchrhy.vercel.app). git 커밋은 여전히 안 됨 — 다음 세션 첫 작업은 커밋.*
+*갱신: 2026-07-22 세션 종료 시점 — 카라멜단센을 실제 음원(MP3 하이라이트 87.6초)으로 교체, FileTrack 오디오 엔진 추가, 음원 실측(164.73 BPM/162.5ms) 기반 채보 재생성(easy 59·normal 69). 커밋·배포 완료. 남은 것: seed_005 실행 + 실기기 QA.*

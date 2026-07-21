@@ -4,7 +4,7 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PlaySession, type PlayPhase, type PlayResultPayload } from '@/lib/play-session';
 import { extractHighlight } from '@/lib/engine/highlight';
-import { chartUrl, getSong, synthOf, type Difficulty } from '@/lib/songs';
+import { chartUrl, getSong, trackOf, type Difficulty } from '@/lib/songs';
 import { loadPrefs, savePrefs } from '@/lib/store';
 import { resolveChartUrl, submitPlay } from '@/lib/api';
 import { track } from '@/lib/analytics';
@@ -65,7 +65,7 @@ function PlayInner() {
       chartUrl: chartUrl(songId, difficulty),
       // DB chart_url 우선 (에디터가 Storage에 저장한 채보가 배포 없이 반영) — 실패 시 위 정적 경로
       resolveChartUrl: () => resolveChartUrl(songId, difficulty),
-      synth: synthOf(songId),
+      track: trackOf(songId),
       volume: prefs.volume / 100,
       resolution: prefs.resolution,
       initialOffsetMs: prefs.offsetMs,

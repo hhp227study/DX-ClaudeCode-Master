@@ -3,9 +3,10 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { synthOf, type Difficulty } from '@/lib/songs';
+import { trackOf, type Difficulty } from '@/lib/songs';
 import { fetchSongs, type SongWithBest } from '@/lib/api';
-import { SynthTrack } from '@/lib/engine/audio';
+import type { MusicTrack } from '@/lib/engine/audio';
+import { createTrack, previewFromMsOf } from '@/lib/engine/track';
 import { track } from '@/lib/analytics';
 
 /** Song Select — 곡·난이도 선택 + 미리듣기 (8.4) */
@@ -14,7 +15,7 @@ export default function SelectPage() {
   const [difficulty, setDifficulty] = useState<Difficulty>('normal');
   const [previewingId, setPreviewingId] = useState<string | null>(null);
   const [songs, setSongs] = useState<SongWithBest[] | null>(null);
-  const trackRef = useRef<SynthTrack | null>(null);
+  const trackRef = useRef<MusicTrack | null>(null);
   const previewTimer = useRef(0);
 
   useEffect(() => {
@@ -36,9 +37,11 @@ export default function SelectPage() {
       setPreviewingId(null);
       return;
     }
-    trackRef.current = new SynthTrack(synthOf(songId));
+    const spec = trackOf(songId);
+    trackRef.current = createTrack(spec);
     trackRef.current.setVolume(0.5);
-    await trackRef.current.start();
+    // 음원 곡은 조용한 인트로 대신 후렴부터 들려준다 (신스 곡은 0부터)
+    await trackRef.current.start(previewFromMsOf(spec));
     setPreviewingId(songId);
     previewTimer.current = window.setTimeout(async () => {
       await trackRef.current?.stop();
@@ -66,7 +69,7 @@ export default function SelectPage() {
               <div>
                 <div style={{ fontWeight: 800, fontSize: 17 }}>{song.title}</div>
                 <div className="dim">
-                  {song.artist} · {song.bpm} BPM · {song.durationSec}초
+                  {song.artist} · {Math.round(song.bpm)} BPM · {Math.round(song.durationSec)}초
                 </div>
                 <div className="dim">
                   내 최고 기록:{' '}

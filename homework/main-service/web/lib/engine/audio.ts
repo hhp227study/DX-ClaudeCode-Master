@@ -6,7 +6,48 @@ import type { Grade } from './game';
  * AudioContext.currentTime이 게임 판정의 단일 클록 (prd-detail.md R4).
  * suspend/resume으로 일시정지를 지원한다 — suspend 중에는 currentTime이
  * 멈추므로 게임 클록도 자동으로 함께 멈춘다 (FR-10).
+ *
+ * 실제 음원(MP3) 재생은 FileTrack(audio-file.ts) — 둘 다 MusicTrack을 구현하고
+ * AudioContext.currentTime 클록을 공유하므로 게임 루프는 어느 쪽인지 알 필요가 없다.
  */
+
+/**
+ * 게임이 곡에게 요구하는 것 전부 — SynthTrack(합성)과 FileTrack(음원 파일)이 구현한다.
+ * timeMs는 반드시 AudioContext.currentTime에서 파생돼야 한다 (판정의 단일 클록, R4).
+ */
+export interface MusicTrack {
+  readonly bpm: number;
+  readonly durationSec: number;
+  /** 곡 시작 기준 경과 시간(ms) — 게임 판정의 단일 클록 */
+  readonly timeMs: number;
+  readonly ended: boolean;
+  /** 0~1 */
+  setVolume(v: number): void;
+  /** 재생 전 준비(파일 디코딩 등). 합성 트랙은 할 일이 없다 */
+  preload(): Promise<void>;
+  /** fromMs부터 재생 — 곡 중간 시작(채보 에디터 seek) */
+  start(fromMs?: number): Promise<void>;
+  suspend(): Promise<void>;
+  resume(): Promise<void>;
+  stop(): Promise<void>;
+  /** 판정 효과음 */
+  playHit(grade: Grade): void;
+}
+
+/** 판정 효과음 — 두 트랙 구현이 공유한다 (곡 소스와 무관한 UI 사운드) */
+export function playHitOn(ctx: AudioContext, master: GainNode, grade: Grade): void {
+  if (ctx.state !== 'running' || grade === 'MISS') return;
+  const freq = { PERFECT: 1320, GREAT: 990, GOOD: 660, DECOY: 180, MISS: 0 }[grade];
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = grade === 'DECOY' ? 'sawtooth' : 'triangle';
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0.18, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+  osc.connect(gain).connect(master);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.12);
+}
 
 export interface SynthSpec {
   bpm: number;
@@ -38,7 +79,7 @@ export const DEFAULT_SYNTH: SynthSpec = {
 
 const midiHz = (n: number): number => 440 * Math.pow(2, (n - 69) / 12);
 
-export class SynthTrack {
+export class SynthTrack implements MusicTrack {
   private ctx: AudioContext | null = null;
   private master: GainNode | null = null;
   private noiseBuf: AudioBuffer | null = null;
@@ -68,6 +109,9 @@ export class SynthTrack {
     this.volumeValue = Math.max(0, Math.min(1, v));
     if (this.master) this.master.gain.value = this.volumeValue;
   }
+
+  /** 합성 트랙은 미리 준비할 게 없다 (MusicTrack 인터페이스 충족용) */
+  async preload(): Promise<void> {}
 
   /** fromMs부터 재생 — 곡 중간 시작(채보 에디터 seek). 이전 이벤트는 예약에서 제외 */
   async start(fromMs = 0): Promise<void> {
@@ -131,20 +175,7 @@ export class SynthTrack {
 
   /** 판정 효과음 */
   playHit(grade: Grade): void {
-    const ctx = this.ctx;
-    const master = this.master;
-    if (!ctx || !master || ctx.state !== 'running') return;
-    if (grade === 'MISS') return;
-    const freq = { PERFECT: 1320, GREAT: 990, GOOD: 660, DECOY: 180, MISS: 0 }[grade];
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = grade === 'DECOY' ? 'sawtooth' : 'triangle';
-    osc.frequency.value = freq;
-    gain.gain.setValueAtTime(0.18, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
-    osc.connect(gain).connect(master);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.12);
+    if (this.ctx && this.master) playHitOn(this.ctx, this.master, grade);
   }
 
   private kick(t: number): void {

@@ -2,7 +2,8 @@ import { HandTracker } from './engine/tracker';
 import { PoseTracker, type PoseFlags } from './engine/pose-tracker';
 import { ChartGame, type GameResult, type GestureKind, type Grade, type PxPoint } from './engine/game';
 import { loadChart, remapChartForFraming, remapX, remapY, type Chart, type Framing } from './engine/chart';
-import { SynthTrack, type SynthSpec } from './engine/audio';
+import type { MusicTrack } from './engine/audio';
+import { createTrack, type TrackSpec } from './engine/track';
 import { Recorder } from './engine/recorder';
 import { drawEndCard, ENDCARD_MS, type EndCardInfo } from './engine/endcard';
 import { FpsMeter } from './engine/metrics';
@@ -40,8 +41,8 @@ export interface SessionOptions {
    * 엔진이 데이터 레이어를 직접 알지 않도록 콜백으로 받는다
    */
   resolveChartUrl?: () => Promise<string>;
-  /** 곡의 신스 스펙 (songs.ts synthOf) */
-  synth: SynthSpec;
+  /** 곡의 사운드 소스 — 신스 또는 음원 파일 (songs.ts trackOf) */
+  track: TrackSpec;
   /** 0~1 */
   volume: number;
   resolution: 720 | 480;
@@ -85,7 +86,7 @@ export class PlaySession {
   private readonly hand = new HandTracker();
   private readonly pose = new PoseTracker();
   readonly game = new ChartGame();
-  private readonly track: SynthTrack;
+  private readonly track: MusicTrack;
   private readonly recorder = new Recorder();
   private readonly fpsMeter = new FpsMeter();
 
@@ -113,7 +114,7 @@ export class PlaySession {
     private readonly video: HTMLVideoElement,
     private readonly opts: SessionOptions,
   ) {
-    this.track = new SynthTrack(opts.synth);
+    this.track = createTrack(opts.track);
     this.framing = opts.framing;
     this.game.offsetMs = opts.initialOffsetMs;
     this.track.setVolume(opts.volume);
@@ -142,6 +143,8 @@ export class PlaySession {
       this.hand.init(),
       this.pose.init(),
       this.openStream(),
+      // 음원 파일 곡은 여기서 받아 디코딩까지 끝낸다 — 카운트다운 후 바로 소리가 나야 한다
+      this.track.preload(),
     ]);
     if (this.disposed) return;
     // 함정 OFF는 채보 자체에서 제외 — decoy는 판정 분모(accuracy)에 안 들어가므로 점수 체계 불변

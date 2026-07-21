@@ -31,13 +31,18 @@ GA4 프로퍼티 생성 후 추가하면 된다.
 | `lib/store.ts` | localStorage — 설정(오프셋/볼륨/해상도/닉네임) + 곡별 최고 기록 (게스트/오프라인 폴백) |
 | `lib/supabase.ts` | Supabase 클라이언트 — env 미설정이면 null (게스트 전용 모드) |
 | `lib/api.ts` | 데이터 레이어 — 프로필/곡 카탈로그+내 베스트/플레이 저장/로컬 기록 이관. 전 함수 localStorage 폴백 |
-| `lib/songs.ts` | 정적 곡 카탈로그+신스 스펙 조회 (서버 카탈로그 실패 시 폴백) |
+| `lib/songs.ts` | 정적 곡 카탈로그 + 곡의 사운드 소스 조회(`trackOf` — 신스/음원 파일) (서버 카탈로그 실패 시 폴백) |
+| `lib/engine/audio.ts` | `MusicTrack` 인터페이스 + `SynthTrack`(Web Audio 합성) + 공용 판정 효과음 |
+| `lib/engine/audio-file.ts` | `FileTrack` — MP3를 decodeAudioData로 디코딩해 BufferSource로 재생 (클록은 신스와 동일) |
+| `lib/engine/track.ts` | `TrackSpec` 유니언 + `createTrack` 팩토리 — 게임/에디터는 MusicTrack만 안다 |
 | `lib/analytics.ts` | GA4 이벤트 수집 (FR-14) — env 미설정이면 no-op, 공통 파라미터 자동 첨부 |
-| `content/songs.json` | 곡 정의 단일 소스 — 메타+신스 패턴+미션. 앱과 채보 생성기가 함께 읽음 |
+| `content/songs.json` | 곡 정의 단일 소스 — 메타+사운드(synth 패턴 또는 audio 파일)+구간/포즈+미션. 앱과 채보 생성기가 함께 읽음 |
+| `public/audio/` | 음원 파일 곡의 MP3 (카라멜단센 하이라이트 87.6초) |
 | `supabase/setup.sql` | DB 스키마+RLS+가입 트리거+데모 시드 — 대시보드 SQL Editor에 붙여넣기 |
 | `supabase/seed_002_songs.sql` | 신곡 4곡+채보 8개 시드 (setup.sql 실행 후 추가 실행) |
 | `supabase/seed_003_caramelldansen.sql` | 카라멜단센 신스 커버+채보 2개 시드 (2026-07-12) |
 | `supabase/seed_004_difficulty_rework.sql` | 난이도 개편 note_count 갱신 (2026-07-12, seed_003 다음 실행) |
+| `supabase/seed_005_caramelldansen_audio.sql` | 카라멜단센 실제 음원 교체 — 메타·note_count 갱신 (2026-07-22) |
 | `scripts/gen-chart.mjs` | 채보 생성기 — songs.json의 전 곡 easy/normal 생성 |
 
 ## 설계 결정
@@ -88,6 +93,17 @@ GA4 프로퍼티 생성 후 추가하면 된다.
   오디오에서 추출해 검증했다(두 영상이 슬롯 단위 일치 — docs/reference-choreo-analysis.md).
   채보는 songs.json `choreo` 오버라이드(yBase [0.46, 0.58], sway 가중치 상향)로
   "손 올리고 추는 춤"을 y 밴드 상부에 번역 — 얼굴 가림 금지(y≥0.45)는 유지
+
+- **실제 음원 곡 지원** (카라멜단센, 2026-07-22) — 곡의 사운드가 신스 합성 또는 음원 파일 둘 중
+  하나가 됐다. 둘 다 `MusicTrack`을 구현하고 **AudioContext.currentTime을 클록으로 쓴다**:
+  `<audio>` 엘리먼트의 currentTime은 갱신이 성기고 지터가 커서 ±250ms 판정의 기준이 될 수 없어,
+  MP3도 decodeAudioData → AudioBufferSourceNode로 재생한다. 덕분에 일시정지(suspend)·seek·
+  판정 로직이 신스 곡과 완전히 같은 코드로 돈다.
+  실제 녹음은 첫 다운비트가 파일 0ms가 아니므로 `audio.firstBeatMs`(카라멜단센 162.5ms)를
+  비트 그리드 원점으로 쓰고, 채보 생성기가 이 원점에 스냅한다. BPM도 반올림하지 않는다
+  (164.73 → 165로 반올림하면 87초 구간에서 142ms 어긋남). 곡 구조가 균질한 신스 곡과 달리
+  실제 곡은 인트로·후렴이 뚜렷해서 `sections`/`poses`로 구간을 명시 배치한다.
+  근거 실측은 docs/reference-choreo-analysis.md "실제 음원 도입" 절
 
 ## 남은 작업
 

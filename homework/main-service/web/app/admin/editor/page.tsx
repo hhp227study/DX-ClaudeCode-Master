@@ -3,8 +3,9 @@
 import { Suspense, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { chartUrl as staticChartUrl, getSong, synthOf, type Difficulty } from '@/lib/songs';
-import { SynthTrack } from '@/lib/engine/audio';
+import { chartUrl as staticChartUrl, getSong, trackOf, type Difficulty } from '@/lib/songs';
+import type { MusicTrack } from '@/lib/engine/audio';
+import { createTrack } from '@/lib/engine/track';
 import { loadChart, type Chart, type ChartNote, type PoseKind } from '@/lib/engine/chart';
 import { fetchChartRow, saveChart, type ChartRowInfo } from '@/lib/admin-api';
 
@@ -63,7 +64,7 @@ function EditorInner() {
 
   const fieldRef = useRef<HTMLCanvasElement>(null);
   const tlRef = useRef<HTMLCanvasElement>(null);
-  const trackRef = useRef<SynthTrack | null>(null);
+  const trackRef = useRef<MusicTrack | null>(null);
 
   // rAF 루프·키보드 핸들러가 리렌더 없이 최신값을 읽도록 렌더마다 동기화
   const chartRef = useRef(chart);
@@ -161,7 +162,7 @@ function EditorInner() {
       await t.resume(); // 일시정지 지점 그대로 — 재예약 없이 이어 재생
     } else {
       await t?.stop();
-      const nt = new SynthTrack(synthOf(songId));
+      const nt = createTrack(trackOf(songId));
       nt.setVolume(0.6);
       trackRef.current = nt;
       await nt.start(cursorRef.current);
@@ -175,7 +176,7 @@ function EditorInner() {
     cursorRef.current = clamped;
     setCursorMs(clamped);
     if (playingRef.current) {
-      const nt = new SynthTrack(synthOf(songId));
+      const nt = createTrack(trackOf(songId));
       nt.setVolume(0.6);
       const old = trackRef.current;
       trackRef.current = nt;
@@ -621,7 +622,7 @@ function EditorInner() {
         prev = n;
       }
     }
-    if (c.bpm !== song?.bpm) out.push(`채보 BPM(${c.bpm}) ≠ 신스 BPM(${song?.bpm})`);
+    if (c.bpm !== song?.bpm) out.push(`채보 BPM(${c.bpm}) ≠ 곡 BPM(${song?.bpm})`);
     return out;
   };
 
@@ -678,7 +679,8 @@ function EditorInner() {
             {song.title} <span className="badge">{difficulty}</span>
           </div>
           <div className="dim">
-            {song.bpm} BPM · {song.durationSec}초 · 노트 {chart.notes.length}개 ·{' '}
+            {Math.round(song.bpm)} BPM · {Math.round(song.durationSec)}초 · 노트{' '}
+            {chart.notes.length}개 ·{' '}
             {row ? `v${row.version}` : '신규 채보'}
             {dirty && <strong style={{ color: GOLD }}> · 저장 안 됨</strong>}
           </div>

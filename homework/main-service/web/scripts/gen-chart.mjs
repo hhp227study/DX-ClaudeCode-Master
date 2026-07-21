@@ -30,6 +30,10 @@
  * 구간 배치는 데모 트랙(62초) 기준 비율을 일반화:
  *   인트로 4초 → 구간1(~31%) → 포즈1 → 구간2(~63%) → 포즈2 → 구간3(~끝-4초)
  *
+ * 실제 음원 곡(songs.json audio)은 위 비율 대신 songs.json의 sections/poses로
+ * 곡의 실제 구조(인트로·후렴·브레이크)에 맞춰 명시 배치한다. 비트 그리드의 원점도
+ * 0이 아니라 audio.firstBeatMs(첫 다운비트) — 실제 녹음은 파일 0ms에서 시작하지 않는다.
+ *
  * 사용법: node scripts/gen-chart.mjs
  */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -157,9 +161,11 @@ function makeChoreographer(rand, motifWeights, yBase = [Y_BASE_MIN, Y_BASE_MAX])
 for (const song of catalog.songs) {
   const beat = 60000 / song.bpm;
   const d = song.durationSec * 1000;
+  // 비트 그리드 원점 — 음원 파일 곡은 첫 다운비트가 파일 0ms가 아니다 (합성 곡은 0)
+  const beat0 = song.audio?.firstBeatMs ?? 0;
 
   // 구간 시작을 비트 그리드에 스냅 — 간격이 0.5비트 단위이므로 모든 노트가 (반)박 위에 떨어진다
-  const snap = (t) => Math.ceil(t / beat) * beat;
+  const snap = (t) => beat0 + Math.ceil((t - beat0) / beat) * beat;
   // 비트 간격이 물리 하한(0.75초) 미만이면 0.5비트씩 늘린다 (초고BPM 대비)
   const beatsFor = (base) => {
     let b = base;
@@ -171,11 +177,31 @@ for (const song of catalog.songs) {
   const sec2Start = sec1End + 6000;
   const sec2End = Math.round(d * 0.63);
   const sec3Start = sec2End + 6000;
-  const sections = (beatsArr) => [
-    [snap(4000), sec1End, beatsFor(beatsArr[0])],
-    [snap(sec2Start), sec2End, beatsFor(beatsArr[1])],
-    [snap(sec3Start), d - 4000, beatsFor(beatsArr[2])],
-  ];
+  // songs.json에 sections가 있으면 실제 곡 구조를 그대로 쓴다 (level = 난이도별 간격 배열 인덱스).
+  // 없으면 기존 3구간 비율 배치 — 합성 곡은 구조가 균질해서 비율로 충분하다
+  const sections = (beatsArr) =>
+    song.sections
+      ? song.sections.map((s) => [snap(s.from * 1000), s.to * 1000, beatsFor(beatsArr[s.level])])
+      : [
+          [snap(4000), sec1End, beatsFor(beatsArr[0])],
+          [snap(sec2Start), sec2End, beatsFor(beatsArr[1])],
+          [snap(sec3Start), d - 4000, beatsFor(beatsArr[2])],
+        ];
+  // 포즈 노트도 명시 배치 우선 — 구간 사이 빈 구간(전주/브레이크)에 놓고 비트에 스냅한다.
+  // 폴백(합성 곡)은 기존대로 구간 끝 +2초, 스냅하지 않는다 — 캐치 노트가 없는 자리라
+  // 비트 정렬이 필요 없고, 스냅하면 기존 10개 채보가 전부 바뀐다
+  const poseNotes = () =>
+    song.poses
+      ? song.poses.map((p) => ({
+          t: Math.round(snap(p.at * 1000)),
+          type: 'pose',
+          pose: p.pose,
+          durationMs: POSE_DURATION,
+        }))
+      : [
+          { t: sec1End + 2000, type: 'pose', pose: 'hands_up', durationMs: POSE_DURATION },
+          { t: sec2End + 2000, type: 'pose', pose: 'heart', durationMs: POSE_DURATION },
+        ];
 
   const choreo = song.choreo ?? {};
   const diffs = {
@@ -203,6 +229,11 @@ for (const song of catalog.songs) {
     for (const [from, to, beats] of cfg.sections) {
       let firstInSection = true;
       for (let t = from; t < to; t += beat * beats) {
+        // 구간 경계 가드 — 구간마다 시작을 따로 스냅하므로 앞 구간 마지막 노트와
+        // 물리 하한(0.75초)보다 가까워질 수 있다. 그리드를 흔들지 않게 그 노트를 버린다
+        // (구간 사이가 6초씩 벌어지는 비율 배치에서는 걸리지 않는다)
+        const last = notes[notes.length - 1];
+        if (last && t - last.t < MIN_GAP_MS) continue;
         let pos = nextPos();
         // 분리용 y 여유는 확정 밴드(0.45~0.73) 전체 — 기본 밴드가 좁아 y만으론 부족할 수 있다
         const [yLo, yHi] = pos.accent ? [Y_ACCENT_MIN, Y_ACCENT_MAX] : [Y_ACCENT_MIN, Y_DECOY_MAX];
@@ -242,8 +273,7 @@ for (const song of catalog.songs) {
         }
       }
     }
-    notes.push({ t: sec1End + 2000, type: 'pose', pose: 'hands_up', durationMs: POSE_DURATION });
-    notes.push({ t: sec2End + 2000, type: 'pose', pose: 'heart', durationMs: POSE_DURATION });
+    notes.push(...poseNotes());
     notes.sort((a, b) => a.t - b.t);
 
     const chart = {
@@ -251,7 +281,8 @@ for (const song of catalog.songs) {
       songId: song.id,
       difficulty,
       bpm: song.bpm,
-      offsetMs: 0,
+      // 비트 그리드 원점 — 에디터의 마디선·스냅이 실제 음원의 다운비트에 맞는다
+      offsetMs: beat0,
       targetWord: song.targetWord,
       mission: song.mission,
       notes,
