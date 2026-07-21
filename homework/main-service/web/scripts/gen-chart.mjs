@@ -8,14 +8,16 @@
  *   2026-07-12 난이도 개편 — 구 normal이 easy로 승격, normal은 더 촘촘하게)
  * - 물리 하한 0.75초 — 손 이동 한계 + 판정 윈도우(±250ms) 겹침 방지. 미달 시 0.5비트씩 증가
  * - 모든 노트는 비트 그리드에 스냅 — 구간 시작을 비트에 정렬, 간격은 0.5비트 단위
- * - 출현 y 범위 0.45~0.73 — 얼굴(y < 0.45)을 가리지 않는다
+ * - 출현 y 범위는 곡별 밴드 안에서 Y_LIMIT_TOP(0.08)~0.73 — 2026-07-22 유저 요청으로
+ *   '얼굴 가림 금지(y≥0.45)' 상한을 폐지했다. 머리 위로 손을 올리는 춤(카라멜단센)이
+ *   노트로 표현되지 못하고 포즈 노트로만 우회되던 원인이었다
  *
  * 안무(choreography) 규칙 — reference/ 셀카 댄스 영상들의 포즈 분석에서 도출.
  * y 높이·모티프 가중치는 유저가 지정한 표준 영상(reference/best.mp4) 기준
  * (근거 수치는 docs/reference-choreo-analysis.md):
  * - 좌/우 앵커존(x 0.28/0.72)을 교대로 오가는 그루브 — 양손이 번갈아 춤추는 동선
  * - 4노트 프레이즈 모티프(sway/arc/build/heart, 가중치 선택) — 무작위 개별 배치 금지
- * - 기본 y는 어깨~가슴 높이(0.50~0.66) 랜덤 워크, 프레이즈 끝만 0.45~0.53 액센트
+ * - 기본 y는 곡별 yBase 랜덤 워크(기본 0.50~0.66 = 어깨~가슴), 프레이즈 끝은 yAccent 액센트
  * - heart(중앙 액센트 마무리) 프레이즈를 easy에도 포함 — best.mp4의 ~4초 주기 하트
  * - 같은 쪽 연속 노트는 스텝 상한(순간이동 배치 금지)
  * - 함정은 직전에 잡은 자리 근처(주로 동선 아래 허리 높이)에 y를 비켜 배치
@@ -23,8 +25,10 @@
  *
  * 곡별 오버라이드 — songs.json의 choreo(선택 필드):
  * - yBase: 기본 y 밴드 [min,max]. 카라멜단센(손을 올리고 추는 춤 — 손목 y 중앙값 0.33~0.38,
- *   어깨 위 체류 42~59%, 2비트 스웨이 주기)은 밴드 상부 [0.46, 0.58]로 올린다
+ *   어깨 위 체류 42~59%, 코 위 체류 37~46%)은 머리 높이 [0.30, 0.48]로 올린다
  *   (근거: docs/reference-choreo-analysis.md의 caramelldansen 영상 분석)
+ * - yAccent: 프레이즈 끝 액센트 밴드. 카라멜단센은 정수리 위 [0.10, 0.24] — '만세' 동작
+ * - xScale: 앵커를 중앙 기준으로 벌리는 배율. 팔을 크게 쓰는 곡용 (X_MIN/MAX에서 포화)
  * - motifs: 난이도별 모티프 가중치 (카라멜단센은 sway 비중 상향 — 좌우 교대가 시그니처)
  *
  * 구간 배치는 데모 트랙(62초) 기준 비율을 일반화:
@@ -64,9 +68,19 @@ const Y_BASE_MAX = 0.66;
 const Y_STEP_MAX = 0.1; // 같은 쪽 y 랜덤 워크 스텝 상한
 const Y_ACCENT_MIN = 0.45;
 const Y_ACCENT_MAX = 0.53;
-const Y_DECOY_MAX = 0.73; // 함정은 동선 아래(허리 높이)까지 허용 — 확정 밴드 하한
+const Y_DECOY_MAX = 0.73; // 함정은 동선 아래(허리 높이)까지 허용 — 밴드 하한
 const X_MIN = 0.1; // 버블 반지름(0.075×min변)이 화면 밖으로 안 나가게
 const X_MAX = 0.9;
+
+/**
+ * 밴드 상한 — 2026-07-22까지 0.45("얼굴 가림 금지")였다. 카라멜단센처럼 머리 위로 손을
+ * 올리는 춤이 노트로 표현되지 못하고 포즈 노트로만 우회되던 원인이라 유저 요청으로 걷어냈다.
+ *
+ * 저작 좌표계(9:16, 어깨선 y 0.55, 어깨너비 0.70)에서 세로 1 몸단위(bu) = 0.394.
+ * 그래서 y를 몸 기준으로 읽으면: 0.55 어깨선 / 0.43 턱 / 0.31 눈 / 0.20 정수리 / 0.08 머리 위.
+ * 0.08은 어깨선에서 약 1.2bu 위 = 만세한 손 높이다.
+ */
+const Y_LIMIT_TOP = 0.08;
 
 // 4노트 프레이즈 모티프 — side: 앵커 키, accent: 프레이즈 끝 고조(y 상부)
 // heart(중앙 액센트 마무리)는 best.mp4의 시그니처 — ~4초마다 중앙 하트
@@ -119,8 +133,15 @@ function separated(pos, actives, yLo, yHi) {
 }
 
 /** 안무가 — 모티프 프레이즈를 굴리며 노트 위치를 뽑는다. yBase = 곡별 기본 y 밴드 */
-function makeChoreographer(rand, motifWeights, yBase = [Y_BASE_MIN, Y_BASE_MAX]) {
+function makeChoreographer(
+  rand,
+  motifWeights,
+  yBase = [Y_BASE_MIN, Y_BASE_MAX],
+  yAccent = [Y_ACCENT_MIN, Y_ACCENT_MAX],
+  xScale = 1,
+) {
   const [yLo, yHi] = yBase;
+  const [yAccLo, yAccHi] = yAccent;
   const entries = Object.entries(motifWeights);
   const total = entries.reduce((s, [, w]) => s + w, 0);
   const pickMotif = () => {
@@ -147,10 +168,12 @@ function makeChoreographer(rand, motifWeights, yBase = [Y_BASE_MIN, Y_BASE_MAX])
     const side = mirror ? flip[slot.side] : slot.side;
     const walkKey = side.startsWith('L') ? 'L' : side.startsWith('R') ? 'R' : 'C';
 
-    const x = clamp(ANCHOR[side] + (rand() - 0.5) * 2 * X_JITTER, X_MIN, X_MAX);
+    // xScale은 앵커를 중앙 기준으로 벌린다 — 팔을 크게 쓰는 곡용 (X_MIN/MAX에서 포화)
+    const anchorX = 0.5 + (ANCHOR[side] - 0.5) * xScale;
+    const x = clamp(anchorX + (rand() - 0.5) * 2 * X_JITTER, X_MIN, X_MAX);
     let y;
     if (slot.accent) {
-      y = Y_ACCENT_MIN + rand() * (Y_ACCENT_MAX - Y_ACCENT_MIN);
+      y = yAccLo + rand() * (yAccHi - yAccLo);
     } else {
       y = yWalk[walkKey] + (rand() - 0.5) * 2 * Y_STEP_MAX;
       // 밴드 경계에서 반사 — clamp는 워크를 경계에 눌어붙게 만든다
@@ -209,6 +232,12 @@ for (const song of catalog.songs) {
         ];
 
   const choreo = song.choreo ?? {};
+  // 프레이즈 액센트 밴드 — 곡별 오버라이드(머리 위로 손을 올리는 춤은 여기가 정수리 위로 간다).
+  // 밴드 상한은 Y_LIMIT_TOP까지 열려 있다 (구 '얼굴 가림 금지 0.45' 폐지)
+  const accentBand = choreo.yAccent ?? [Y_ACCENT_MIN, Y_ACCENT_MAX];
+  if (Math.min(...accentBand) < Y_LIMIT_TOP) {
+    throw new Error(`${song.id}: yAccent 상한(${Math.min(...accentBand)})이 밴드 한계 ${Y_LIMIT_TOP}를 넘음`);
+  }
   const diffs = {
     // easy = 2026-07-12 개편 전의 normal 그대로 (간격·함정·모티프)
     easy: {
@@ -226,7 +255,7 @@ for (const song of catalog.songs) {
   for (const [difficulty, cfg] of Object.entries(diffs)) {
     let seed = seedOf(song.id);
     const rand = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
-    const nextPos = makeChoreographer(rand, cfg.motifs, choreo.yBase);
+    const nextPos = makeChoreographer(rand, cfg.motifs, choreo.yBase, accentBand, choreo.xScale ?? 1);
 
     // 1패스: 안무대로 캐치 노트 전부 배치 (연속 노트 겹침 분리 포함)
     const notes = [];
@@ -240,8 +269,8 @@ for (const song of catalog.songs) {
         const last = notes[notes.length - 1];
         if (last && t - last.t < MIN_GAP_MS) continue;
         let pos = nextPos();
-        // 분리용 y 여유는 확정 밴드(0.45~0.73) 전체 — 기본 밴드가 좁아 y만으론 부족할 수 있다
-        const [yLo, yHi] = pos.accent ? [Y_ACCENT_MIN, Y_ACCENT_MAX] : [Y_ACCENT_MIN, Y_DECOY_MAX];
+        // 분리용 y 여유는 곡의 전체 밴드 — 기본 밴드가 좁아 y만으론 부족할 수 있다
+        const [yLo, yHi] = pos.accent ? accentBand : [Math.min(...accentBand), Y_DECOY_MAX];
         // 같은 화면에 떠 있을 노트 전부와 분리 (간격이 짧아지면 동시 노출이 3개까지 늘어난다)
         const actives = notes.filter((n) => t - n.t < APPROACH_WINDOW_MS);
         pos = separated(pos, actives, yLo, yHi);
@@ -269,7 +298,7 @@ for (const song of catalog.songs) {
           t: notes[i].t,
           type: 'decoy',
           x,
-          y: +clamp(prev.y + dir * mag, Y_ACCENT_MIN, Y_DECOY_MAX).toFixed(3),
+          y: +clamp(prev.y + dir * mag, Math.min(...accentBand), Y_DECOY_MAX).toFixed(3),
           label: '다른 단어',
         };
         if (neighbors.every((n) => effDist(decoy, n) >= (n.t > decoy.t ? 0.24 : 0.2))) {

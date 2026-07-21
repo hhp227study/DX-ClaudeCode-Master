@@ -18,10 +18,16 @@ import { fetchChartRow, saveChart, type ChartRowInfo } from '@/lib/admin-api';
 
 const APPROACH_MS = 2000; // 게임과 동일한 노트 접근 시간 — 미리보기 링도 같은 감각
 const MIN_GAP_MS = 750; // 판정 노트 물리 하한 (gen-chart.mjs와 동일)
-const Y_MIN = 0.45; // 얼굴 가림 금지 밴드
+// 밴드 상한 — 구 0.45("얼굴 가림 금지")는 2026-07-22 폐지 (머리 위 안무를 노트로 못 담았다).
+// gen-chart.mjs의 Y_LIMIT_TOP과 같은 값이어야 한다
+const Y_MIN = 0.08;
 const Y_MAX = 0.73;
+// 저작 좌표계와 같은 9:16 — 3:4로 그리면 미리보기가 실제 배치와 다르게 보인다
 const FIELD_W = 360;
-const FIELD_H = 480;
+const FIELD_H = 640;
+// 저작 좌표계의 몸 기준선 (docs/reference-choreo-analysis.md: 어깨선 0.55, 어깨너비 0.70,
+// 세로 1 몸단위 = 0.394). 작성자가 "몸 어디쯤인지" 보면서 찍을 수 있게 가이드로 그린다
+const BODY = { crown: 0.2, eye: 0.31, chin: 0.43, shoulder: 0.55, waist: 0.73 };
 const TL_W = 880;
 const TL_H = 56;
 const NOTE_R = 24;
@@ -476,12 +482,10 @@ function EditorInner() {
     ctx.fillStyle = 'rgba(0,0,0,0.35)';
     ctx.fillRect(0, 0, FIELD_W, FIELD_H);
 
-    // 얼굴 존(금지)·유효 밴드 가이드
-    ctx.fillStyle = 'rgba(255,100,100,0.08)';
-    ctx.fillRect(0, 0, FIELD_W, Y_MIN * FIELD_H);
-    ctx.fillStyle = 'rgba(126,224,138,0.06)';
+    // 유효 밴드
+    ctx.fillStyle = 'rgba(126,224,138,0.05)';
     ctx.fillRect(0, Y_MIN * FIELD_H, FIELD_W, (Y_MAX - Y_MIN) * FIELD_H);
-    ctx.strokeStyle = 'rgba(126,224,138,0.45)';
+    ctx.strokeStyle = 'rgba(126,224,138,0.4)';
     ctx.setLineDash([4, 4]);
     for (const y of [Y_MIN, Y_MAX]) {
       ctx.beginPath();
@@ -489,18 +493,38 @@ function EditorInner() {
       ctx.lineTo(FIELD_W, y * FIELD_H);
       ctx.stroke();
     }
-    // 안무 앵커 x 0.28 / 0.72
-    ctx.strokeStyle = 'rgba(255,255,255,0.12)';
-    for (const x of [0.28, 0.72]) {
-      ctx.beginPath();
-      ctx.moveTo(x * FIELD_W, Y_MIN * FIELD_H);
-      ctx.lineTo(x * FIELD_W, Y_MAX * FIELD_H);
-      ctx.stroke();
-    }
     ctx.setLineDash([]);
-    ctx.fillStyle = 'rgba(255,120,120,0.6)';
+
+    // 몸 실루엣 가이드 — 노트가 몸의 어느 높이에 오는지 보이게 (게임은 몸 기준으로 배치한다)
+    const shoulderPx = 0.7 * FIELD_W; // 저작 기준 어깨너비
+    const cx = FIELD_W / 2;
+    const shoulderY = BODY.shoulder * FIELD_H;
+    const headR = shoulderPx * 0.31;
+    ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); // 머리
+    ctx.arc(cx, (BODY.eye + 0.02) * FIELD_H, headR, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath(); // 어깨선 + 몸통
+    ctx.moveTo(cx - shoulderPx / 2, shoulderY);
+    ctx.lineTo(cx + shoulderPx / 2, shoulderY);
+    ctx.moveTo(cx - shoulderPx * 0.42, shoulderY);
+    ctx.lineTo(cx - shoulderPx * 0.36, BODY.waist * FIELD_H);
+    ctx.moveTo(cx + shoulderPx * 0.42, shoulderY);
+    ctx.lineTo(cx + shoulderPx * 0.36, BODY.waist * FIELD_H);
+    ctx.stroke();
+    ctx.lineWidth = 1;
+
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
     ctx.font = '10px sans-serif';
-    ctx.fillText('얼굴 존 — 노트 금지', 8, 14);
+    for (const [label, y] of [
+      ['머리 위 (만세)', Y_MIN],
+      ['정수리', BODY.crown],
+      ['어깨선', BODY.shoulder],
+      ['허리', Y_MAX],
+    ] as const) {
+      ctx.fillText(label, 6, y * FIELD_H + (y === Y_MIN ? 12 : -3));
+    }
 
     // 노트: 게임과 같은 접근 창(t−2000 → t)에 들어온 것만 + 선택 노트는 항상
     c.notes.forEach((n, i) => {

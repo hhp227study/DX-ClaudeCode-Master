@@ -285,6 +285,7 @@ export class PlaySession {
     }
     this.bodyAnchor = this.measureBody();
     this.applyChartLayout();
+    this.warnIfNoHeadroom();
     // 몸 앵커가 잡히면 프레이밍 구분 자체가 배치에 흡수된다(어깨너비가 곧 척도) — 안내는 생략.
     // 앵커가 없어 기존 프레이밍 방식으로 폴백한 경우에만 감지 결과를 알린다
     if (framingChanged && !this.bodyAnchor) {
@@ -293,6 +294,22 @@ export class PlaySession {
           ? '풀바디 프레이밍 감지 — 버블을 손 닿는 위치로 조정했어요'
           : '클로즈업 프레이밍 감지 — 버블 위치를 기본으로 조정했어요',
       );
+    }
+  }
+
+  /**
+   * 머리 위 노트가 화면 위로 잘리면 알려준다.
+   * 카메라에 바짝 붙어 앉으면 머리 위 여백이 프레임에 없어 '만세' 노트가 상단에 몰린다 —
+   * 채보가 틀린 게 아니라 카메라가 그 공간을 못 보는 것이라 유저가 물러서야 해결된다.
+   */
+  private warnIfNoHeadroom(): void {
+    if (!this.bodyAnchor || !this.chart) return;
+    const ys = this.chart.notes.map((n) => n.y).filter((y): y is number => y !== undefined);
+    if (!ys.length) return;
+    const CLAMP_TOP = 0.06; // remapChartToBody의 상단 클램프 값
+    const clamped = ys.filter((y) => y <= CLAMP_TOP + 0.001).length;
+    if (clamped >= 3) {
+      this.opts.onToast('머리 위 버블이 화면에 잘려요 — 카메라에서 조금 더 떨어져 보세요');
     }
   }
 

@@ -178,7 +178,9 @@
         "previewFromMs": 29300
       },
       "choreo": {
-        "yBase": [0.46, 0.58],
+        "yBase": [0.30, 0.48],
+        "yAccent": [0.10, 0.24],
+        "xScale": 1.35,
         "motifs": {
           "easy": { "sway": 35, "arc": 15, "heart": 30, "vspread": 20 },
           "normal": { "sway": 30, "arc": 10, "build": 15, "heart": 30, "vspread": 15 }
