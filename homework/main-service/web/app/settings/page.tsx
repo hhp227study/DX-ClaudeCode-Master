@@ -139,7 +139,8 @@ export default function SettingsPage() {
           </select>
         </div>
         <p className="dim" style={{ marginTop: 6 }}>
-          멀리서 전신으로 플레이하면 풀바디를 선택하세요 — 버블이 손 닿는 높이·폭으로 옮겨집니다.
+          버블은 시작 직전 카메라로 잰 어깨 위치·너비에 맞춰 자동 배치됩니다 — 폰 세로든 PC 가로든
+          몸 대비 같은 자리에 뜹니다. 이 설정은 사람이 인식되지 않을 때 쓰는 예비값입니다.
         </p>
         <label className="row" style={{ marginTop: 8, gap: 6 }}>
           <input

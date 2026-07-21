@@ -8,10 +8,13 @@ export interface PoseFlags {
 
 /** 프레이밍 판별 샘플 — docs/reference-choreo-analysis.md '프레이밍 분류' 실측 기반 */
 export interface FramingSample {
-  /** 어깨너비 (화면 비율) — 클로즈업 ≥0.45, 풀바디 <0.25 */
+  /** 어깨너비 (영상 가로 비율) — 클로즈업 ≥0.45, 풀바디 <0.25 */
   shoulderWidth: number;
   /** 양 발목이 신뢰도 있게 프레임 안에 있는가 — 풀바디의 가장 강건한 신호 */
   anklesVisible: boolean;
+  /** 어깨 중심 (영상 정규 좌표, x는 화면 표시와 같게 미러링됨) — 채보의 몸 기준 앵커 */
+  shoulderCx: number;
+  shoulderCy: number;
 }
 
 const WASM_URL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm';
@@ -100,6 +103,9 @@ export class PoseTracker {
     return {
       shoulderWidth: Math.abs(lm[L_SHOULDER].x - lm[R_SHOULDER].x),
       anklesVisible: inFrame(L_ANKLE) && inFrame(R_ANKLE),
+      // 표시 영상은 좌우 반전이므로(tracker.ts와 같은 규약) 앵커도 미러 좌표로 돌려준다
+      shoulderCx: 1 - (lm[L_SHOULDER].x + lm[R_SHOULDER].x) / 2,
+      shoulderCy: (lm[L_SHOULDER].y + lm[R_SHOULDER].y) / 2,
     };
   }
 }

@@ -1,7 +1,17 @@
 import { HandTracker } from './engine/tracker';
 import { PoseTracker, type PoseFlags } from './engine/pose-tracker';
 import { ChartGame, type GameResult, type GestureKind, type Grade, type PxPoint } from './engine/game';
-import { loadChart, remapChartForFraming, remapX, remapY, type Chart, type Framing } from './engine/chart';
+import {
+  bodyPoint,
+  loadChart,
+  remapChartForFraming,
+  remapChartToBody,
+  remapX,
+  remapY,
+  type BodyAnchor,
+  type Chart,
+  type Framing,
+} from './engine/chart';
 import type { MusicTrack } from './engine/audio';
 import { createTrack, type TrackSpec } from './engine/track';
 import { Recorder } from './engine/recorder';
@@ -96,6 +106,12 @@ export class PlaySession {
   private framing: Framing;
   private framingSamples = { full: 0, total: 0 };
   private lastFramingSampleT = 0;
+  /** 카메라 영상이 캔버스에 그려진 사각형 — 몸 앵커를 캔버스 좌표로 옮길 때 쓴다 */
+  private camRect = { dx: 0, dy: 0, dw: 0, dh: 0 };
+  /** 보정·ready 중 모은 어깨 위치/너비 (캔버스 픽셀) — 중앙값이 채보의 몸 앵커가 된다 */
+  private bodySamples: { cx: number; cy: number; sw: number }[] = [];
+  /** 확정된 몸 앵커 — 리사이즈(화면 회전)에도 채보를 다시 맞추려고 보관 */
+  private bodyAnchor: BodyAnchor | null = null;
   private stream: MediaStream | null = null;
   private raf = 0;
   private disposed = false;
@@ -214,8 +230,13 @@ export class PlaySession {
 
   resize(): void {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    this.canvas.width = Math.round(this.canvas.clientWidth * dpr);
-    this.canvas.height = Math.round(this.canvas.clientHeight * dpr);
+    const w = Math.round(this.canvas.clientWidth * dpr);
+    const h = Math.round(this.canvas.clientHeight * dpr);
+    if (w === this.canvas.width && h === this.canvas.height) return;
+    this.canvas.width = w;
+    this.canvas.height = h;
+    // 화면 회전(세로↔가로)으로 비율이 바뀌면 채보 정규 좌표가 몸과 어긋난다 — 다시 맞춘다
+    this.applyChartLayout();
   }
 
   private async openStream(): Promise<void> {
@@ -252,23 +273,80 @@ export class PlaySession {
    * 샘플 4개(≥2초) 미만이면 설정값 유지 (ready에서 바로 시작한 경우 등).
    */
   private resolveFraming(): void {
-    if (!this.opts.framingAuto || !this.rawChart || this.framingSamples.total < 4) return;
-    const detected: Framing =
-      this.framingSamples.full / this.framingSamples.total >= 0.5 ? 'fullbody' : 'closeup';
-    if (detected === this.framing) return;
-    this.framing = detected;
-    this.chart = remapChartForFraming(this.rawChart, detected);
-    this.opts.onFramingDetected?.(detected);
-    this.opts.onToast(
-      detected === 'fullbody'
-        ? '풀바디 프레이밍 감지 — 버블을 손 닿는 위치로 조정했어요'
-        : '클로즈업 프레이밍 감지 — 버블 위치를 기본으로 조정했어요',
-    );
+    let framingChanged = false;
+    if (this.opts.framingAuto && this.rawChart && this.framingSamples.total >= 4) {
+      const detected: Framing =
+        this.framingSamples.full / this.framingSamples.total >= 0.5 ? 'fullbody' : 'closeup';
+      if (detected !== this.framing) {
+        this.framing = detected;
+        this.opts.onFramingDetected?.(detected);
+        framingChanged = true;
+      }
+    }
+    this.bodyAnchor = this.measureBody();
+    this.applyChartLayout();
+    // 몸 앵커가 잡히면 프레이밍 구분 자체가 배치에 흡수된다(어깨너비가 곧 척도) — 안내는 생략.
+    // 앵커가 없어 기존 프레이밍 방식으로 폴백한 경우에만 감지 결과를 알린다
+    if (framingChanged && !this.bodyAnchor) {
+      this.opts.onToast(
+        this.framing === 'fullbody'
+          ? '풀바디 프레이밍 감지 — 버블을 손 닿는 위치로 조정했어요'
+          : '클로즈업 프레이밍 감지 — 버블 위치를 기본으로 조정했어요',
+      );
+    }
+  }
+
+  /** 모아둔 샘플의 중앙값으로 몸 앵커 확정 — 샘플이 부족하면 null (기존 프레이밍 방식으로 폴백) */
+  private measureBody(): BodyAnchor | null {
+    // 카운트다운 3초만으로도 5~6개는 모인다. 2개 미만이면 인식이 안 되는 상황이라 폴백
+    if (this.bodySamples.length < 2) return null;
+    const med = (pick: (s: { cx: number; cy: number; sw: number }) => number) => {
+      const v = this.bodySamples.map(pick).sort((a, b) => a - b);
+      return v[Math.floor(v.length / 2)];
+    };
+    const shoulderPx = med((s) => s.sw);
+    // 인식이 튀어 어깨가 비정상적으로 좁거나 넓게 잡히면 신뢰하지 않는다
+    if (shoulderPx < this.canvas.width * 0.04 || shoulderPx > this.canvas.width * 1.5) return null;
+    return {
+      cx: med((s) => s.cx),
+      cy: med((s) => s.cy),
+      shoulderPx,
+      w: this.canvas.width,
+      h: this.canvas.height,
+    };
+  }
+
+  /**
+   * 채보 좌표계 확정 — 몸 앵커가 있으면 그 기준(화면 비율 무관), 없으면 기존 프레이밍 리매핑.
+   * 리사이즈·화면 회전 때도 다시 부른다: 정규 좌표는 캔버스 비율이 바뀌면 어긋난다.
+   */
+  private applyChartLayout(): void {
+    if (!this.rawChart) return;
+    const a = this.bodyAnchor;
+    if (!a) {
+      this.chart = remapChartForFraming(this.rawChart, this.framing);
+      return;
+    }
+    // 회전·리사이즈로 캔버스가 바뀌면 앵커도 같은 비율로 옮긴다 (카메라 cover 기준)
+    const scale = Math.min(this.canvas.width / a.w, this.canvas.height / a.h);
+    const fitted: BodyAnchor =
+      a.w === this.canvas.width && a.h === this.canvas.height
+        ? a
+        : {
+            cx: this.canvas.width / 2 + (a.cx - a.w / 2) * scale,
+            cy: this.canvas.height / 2 + (a.cy - a.h / 2) * scale,
+            shoulderPx: a.shoulderPx * scale,
+            w: this.canvas.width,
+            h: this.canvas.height,
+          };
+    this.chart = remapChartToBody(this.rawChart, fitted);
   }
 
   private launch(): void {
-    this.resolveFraming();
+    // 프레이밍·몸 앵커 확정은 카운트다운 직후 — 카운트다운 3초 동안 모인 샘플까지 쓴다.
+    // (보정을 건너뛴 재방문 유저는 ready에서 바로 시작해 샘플이 모자랄 수 있다)
     this.countdownThen(async () => {
+      this.resolveFraming();
       await this.track.start();
       try {
         // 곡 소리를 함께 녹화 — 캔버스 스트림에는 소리가 없다 (start 이후에만 잡힌다)
@@ -359,6 +437,7 @@ export class PlaySession {
       const dh = vh * scale;
       const dx = (w - dw) / 2;
       const dy = (h - dh) / 2;
+      this.camRect = { dx, dy, dw, dh };
 
       ctx.save();
       ctx.translate(dx + dw, dy);
@@ -370,16 +449,22 @@ export class PlaySession {
       cursorsPx = cursors.map((c) => ({ x: dx + c.x * dw, y: dy + c.y * dh }));
     }
 
-    // 프레이밍 자동 감지 샘플링 — 게임 시작 전(보정·ready)에만, 0.5초 스로틀 (성능)
+    // 몸 앵커 + 프레이밍 자동 감지 샘플링 — 게임 시작 전(보정·ready)에만, 0.5초 스로틀 (성능).
+    // 앵커는 프레이밍 설정과 무관하게 늘 모은다 (채보를 화면이 아닌 몸에 맞추기 위한 것)
     if (
-      this.opts.framingAuto &&
-      (this.phase === 'calibration' || this.phase === 'ready') &&
+      (this.phase === 'calibration' || this.phase === 'ready' || this.phase === 'countdown') &&
       this.video.videoWidth > 0 &&
       rafNow - this.lastFramingSampleT > 500
     ) {
       this.lastFramingSampleT = rafNow;
       const s = this.pose.sampleFraming(this.video, rafNow);
       if (s) {
+        const { dx, dy, dw, dh } = this.camRect;
+        this.bodySamples.push({
+          cx: dx + s.shoulderCx * dw,
+          cy: dy + s.shoulderCy * dh,
+          sw: s.shoulderWidth * dw,
+        });
         this.framingSamples.total++;
         // 발목 가시성이 주지표, 어깨너비 <0.45는 가드 (분류 근거: reference-choreo-analysis.md)
         if (s.anklesVisible && s.shoulderWidth < 0.45) this.framingSamples.full++;
@@ -432,15 +517,15 @@ export class PlaySession {
     h: number,
   ): void {
     if (!this.calBubble) {
-      // 보정 버블도 채보와 같은 프레이밍 좌표계 — 오프셋이 실제 플레이 위치에서 측정되게
+      // 보정 버블도 채보와 같은 좌표계 — 오프셋이 실제 플레이 위치에서 측정되게.
+      // 보정 중에도 샘플이 쌓이는 대로 몸 기준으로 옮긴다 (아직 없으면 프레이밍 방식)
       const raw = { x: 0.3 + Math.random() * 0.4, y: 0.5 + Math.random() * 0.2 };
+      const anchor = this.measureBody();
       const full = this.framing === 'fullbody';
-      this.calBubble = {
-        x: full ? remapX(raw.x) : raw.x,
-        y: full ? remapY(raw.y) : raw.y,
-        spawnT: now,
-        hitT: now + CAL_APPROACH_MS,
-      };
+      const pos = anchor
+        ? bodyPoint(raw.x, raw.y, anchor)
+        : { x: full ? remapX(raw.x) : raw.x, y: full ? remapY(raw.y) : raw.y };
+      this.calBubble = { ...pos, spawnT: now, hitT: now + CAL_APPROACH_MS };
     }
 
     const b = this.calBubble;
