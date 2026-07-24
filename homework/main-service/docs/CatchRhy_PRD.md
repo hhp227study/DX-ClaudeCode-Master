@@ -17,7 +17,7 @@
 
 ## 게임 모드
 
--   Solo
+-   Solo(1인플레이)
 -   Practice
 -   Challenge
 -   Daily
