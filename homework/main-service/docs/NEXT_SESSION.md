@@ -11,8 +11,15 @@ CatchRhy(카메라 AI 리듬게임) MVP 개발을 이어서 진행하자.
 3. homework/main-service/docs/reference-choreo-analysis.md — 채보 규칙·음원 분석의 근거 실측
 4. homework/main-service/docs/prd-detail.md — 상세 PRD (필요할 때만)
 
-## 상태 (2026-07-22 기준)
-MVP + 백엔드 + 관리자 페이지/에디터 완료. **전부 커밋·배포됨** (미커밋이던 기간은 끝났다).
+## 상태 (2026-07-30 기준)
+MVP + 백엔드 + 관리자 페이지/에디터 완료.
+- 브랜치: 실음원 세션 커밋(dc69c12~f9bab1d)은 origin에 push 완료 — origin/develop·
+  origin/week5-day1 양쪽에 포함 확인(2026-07-30). 유실 위험 해소
+- 채보 y밴드 상향 (2026-07-27 작업 → 2026-07-30 커밋·배포 완료): 유저 "카라멜단센 외 곡들
+  채보가 아래쪽 위주" → gen-chart.mjs 기본 y 밴드 [0.50,0.66]→[0.44,0.58](턱~가슴),
+  액센트 [0.45,0.53]→[0.38,0.47]로 상향 후 전 채보 재생성. 카라멜단센은 오버라이드 곡이라
+  변화 없음. 노트 총수 전 곡 불변 → DB seed 재실행 불필요. 규칙 검증(y·스냅·750ms·분리)
+  통과, 신곡 y중앙값 0.47~0.54(전 0.54~0.59). 프로덕션 반영 확인됨(neon-run-easy y중앙값 0.526)
 - 배포: https://catchrhy.vercel.app — Vercel 프로젝트 `catchrhy`, CLI 인증됨.
   ⚠️ GitHub 연동이 아니라 `npx vercel deploy --prod`로 로컬 파일을 올리는 방식이다.
   커밋·push해도 자동 배포되지 않는다 (유저가 수동 배포 유지를 선택)
@@ -21,9 +28,10 @@ MVP + 백엔드 + 관리자 페이지/에디터 완료. **전부 커밋·배포�
   → 몸 기준 좌표
 
 ## ⚠️ 지금 당장 할 일 (유저 작업)
-**web/supabase/seed_005_caramelldansen_audio.sql을 Supabase 대시보드 SQL Editor에서 실행.**
-실행 전까지 곡 목록의 카라멜단센이 옛 제목·길이·노트 수(신스 커버 기준)로 보인다.
-채보 JSON과 음원 파일은 배포에 이미 반영돼 있어 플레이 자체는 정상.
+~~seed_005 실행~~ → **실행 확인됨** (2026-07-27 REST로 검증: songs.title=Caramelldansen,
+charts note_count 134/154). ~~브랜치 정리~~ ~~채보 상향분 커밋+배포~~ → 완료(2026-07-30).
+남은 당장 할 일: 채보 상향분 커밋을 origin에 push (WSL엔 hhp227study 인증이 없어 push 불가 —
+IntelliJ 등 유저 환경에서 push할 것). 그다음은 아래 실기기 QA.
 
 ## 다음 작업
 1. **실기기 QA (가장 중요 — 최근 변경 3건이 전부 실기기에서만 확인 가능하다)**
