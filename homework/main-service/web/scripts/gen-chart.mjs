@@ -17,7 +17,8 @@
  * (근거 수치는 docs/reference-choreo-analysis.md):
  * - 좌/우 앵커존(x 0.28/0.72)을 교대로 오가는 그루브 — 양손이 번갈아 춤추는 동선
  * - 4노트 프레이즈 모티프(sway/arc/build/heart, 가중치 선택) — 무작위 개별 배치 금지
- * - 기본 y는 곡별 yBase 랜덤 워크(기본 0.50~0.66 = 어깨~가슴), 프레이즈 끝은 yAccent 액센트
+ * - 기본 y는 곡별 yBase 랜덤 워크(기본 0.44~0.58 = 턱~가슴), 프레이즈 끝은 yAccent 액센트
+ *   (2026-07-27 유저: 카라멜단센 외 곡들이 아래쪽 위주 — 기본 밴드를 0.50~0.66에서 상향)
  * - heart(중앙 액센트 마무리) 프레이즈를 easy에도 포함 — best.mp4의 ~4초 주기 하트
  * - 같은 쪽 연속 노트는 스텝 상한(순간이동 배치 금지)
  * - 함정은 직전에 잡은 자리 근처(주로 동선 아래 허리 높이)에 y를 비켜 배치
@@ -63,11 +64,14 @@ const SECTION_BEATS = {
 // LW/RW = 와이드 액센트존 — carameldansen03의 Y자 팔벌리기(프레이즈 절정) 번역
 const ANCHOR = { L: 0.28, R: 0.72, CL: 0.44, CR: 0.56, C: 0.5, LW: 0.16, RW: 0.84 };
 const X_JITTER = 0.07; // 앵커 주변 흔들림 (best.mp4 같은 손 |dx| 90th 0.12와 일치)
-const Y_BASE_MIN = 0.5;
-const Y_BASE_MAX = 0.66;
+// 기본 밴드 0.44~0.58 = 턱~가슴 (저작 좌표계: 어깨선 0.55·턱 0.43) — 2026-07-27 유저
+// 피드백("카라멜단센 외 곡들이 아래쪽 위주")으로 0.50~0.66(어깨~가슴 아래)에서 상향.
+// 액센트도 0.45~0.53(턱~어깨)에서 0.38~0.47(코밑~턱)로 함께 올려 프레이즈 끝 고조를 유지
+const Y_BASE_MIN = 0.44;
+const Y_BASE_MAX = 0.58;
 const Y_STEP_MAX = 0.1; // 같은 쪽 y 랜덤 워크 스텝 상한
-const Y_ACCENT_MIN = 0.45;
-const Y_ACCENT_MAX = 0.53;
+const Y_ACCENT_MIN = 0.38;
+const Y_ACCENT_MAX = 0.47;
 const Y_DECOY_MAX = 0.73; // 함정은 동선 아래(허리 높이)까지 허용 — 밴드 하한
 const X_MIN = 0.1; // 버블 반지름(0.075×min변)이 화면 밖으로 안 나가게
 const X_MAX = 0.9;
