@@ -1,0 +1,43 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand: var(--pink-500);
+  --color-brand-strong: var(--pink-600);
+  --color-brand-soft: var(--pink-200);
+  --color-brand-tint: var(--pink-100);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-brand: var(--font-brand);
+  --font-body: var(--font-body);
+}
+
+/* tokens.css의 Google Fonts @import는 번들 순서상 브라우저가 무시하므로,
+   next/font(layout.tsx) 셀프호스팅 폰트를 디자인 토큰에 연결한다. */
+:root {
+  --font-body: var(--font-noto-kr), 'Noto Sans KR', sans-serif;
+  --font-brand: var(--font-black-han), 'Black Han Sans', sans-serif;
+}
+
+body {
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-body), sans-serif;
+}
+
+@keyframes ds-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ds-spin {
+  animation: ds-spin 1s linear infinite;
+}
+
+/* TextField 실입력 — placeholder 색은 인라인 스타일로 줄 수 없어 전역 클래스로 토큰을 연결한다 */
+.ds-input::placeholder {
+  color: var(--muted-foreground);
+}

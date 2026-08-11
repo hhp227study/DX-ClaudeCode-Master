@@ -1,0 +1,88 @@
+// Iconography — generated from design.pen via Pencil MCP. 수정은 design.pen에서.
+// design.pen의 아이콘은 lucide 라이브러리 기반(icon 노드, library: "lucide")이므로
+// lucide-react 컴포넌트로 1:1 매핑한다. 키는 디자인 시스템 아이콘 이름(icon/<name>/<size>).
+import type { LucideIcon } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUp,
+  ArrowUpDown,
+  Bell,
+  Bookmark,
+  Calendar,
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  CircleAlert,
+  Copy,
+  Ellipsis,
+  EllipsisVertical,
+  Filter,
+  Heart,
+  House,
+  Image,
+  Info,
+  LogOut,
+  Menu,
+  MessageCircle,
+  Pencil,
+  Plus,
+  RefreshCw,
+  Search,
+  Settings,
+  Share2,
+  Star,
+  TriangleAlert,
+  Trash2,
+  User,
+  X,
+} from "lucide-react";
+
+export type DsIcon = { lucideId: string; Component: LucideIcon };
+
+/** 디자인 시스템 아이콘 이름 → lucide 아이콘 (design.pen icon 노드의 icon 필드 그대로) */
+export const dsIcons = {
+  "arrow-left": { lucideId: "arrow-left", Component: ArrowLeft },
+  "arrow-right": { lucideId: "arrow-right", Component: ArrowRight },
+  "arrow-up": { lucideId: "arrow-up", Component: ArrowUp },
+  "arrow-down": { lucideId: "arrow-down", Component: ArrowDown },
+  "chevron-left": { lucideId: "chevron-left", Component: ChevronLeft },
+  "chevron-right": { lucideId: "chevron-right", Component: ChevronRight },
+  "chevron-up": { lucideId: "chevron-up", Component: ChevronUp },
+  "chevron-down": { lucideId: "chevron-down", Component: ChevronDown },
+  home: { lucideId: "house", Component: House },
+  calendar: { lucideId: "calendar", Component: Calendar },
+  copy: { lucideId: "copy", Component: Copy },
+  refresh: { lucideId: "refresh-cw", Component: RefreshCw },
+  logout: { lucideId: "log-out", Component: LogOut },
+  close: { lucideId: "x", Component: X },
+  menu: { lucideId: "menu", Component: Menu },
+  search: { lucideId: "search", Component: Search },
+  filter: { lucideId: "filter", Component: Filter },
+  sort: { lucideId: "arrow-up-down", Component: ArrowUpDown },
+  plus: { lucideId: "plus", Component: Plus },
+  edit: { lucideId: "pencil", Component: Pencil },
+  delete: { lucideId: "trash-2", Component: Trash2 },
+  bookmark: { lucideId: "bookmark", Component: Bookmark },
+  share: { lucideId: "share-2", Component: Share2 },
+  "more-horizontal": { lucideId: "ellipsis", Component: Ellipsis },
+  "more-vertical": { lucideId: "ellipsis-vertical", Component: EllipsisVertical },
+  check: { lucideId: "check", Component: Check },
+  info: { lucideId: "info", Component: Info },
+  warning: { lucideId: "triangle-alert", Component: TriangleAlert },
+  error: { lucideId: "circle-alert", Component: CircleAlert },
+  user: { lucideId: "user", Component: User },
+  settings: { lucideId: "settings", Component: Settings },
+  notification: { lucideId: "bell", Component: Bell },
+  heart: { lucideId: "heart", Component: Heart },
+  star: { lucideId: "star", Component: Star },
+  comment: { lucideId: "message-circle", Component: MessageCircle },
+  image: { lucideId: "image", Component: Image },
+} satisfies Record<string, DsIcon>;
+
+export type DsIconName = keyof typeof dsIcons;
+
+export const iconNames = Object.keys(dsIcons) as DsIconName[];
